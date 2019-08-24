@@ -1,0 +1,21 @@
+Package: HBV.IANIGLA
+Type: Package
+Title: Decoupled Hydrological Model for Research and Education Purposes
+Version: 0.1.0
+Date: 2019-08-16
+Author: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
+Maintainer: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
+Description: The HBV (Hydrologiska Byråns Vattenbalansavdelning) hydrological model is decoupled to allow the user
+  to build his/her own model. This version was developed by the author in IANIGLA-CONICET (Instituto Argentino de Nivologia, Glaciologia
+  y Ciencias Ambientales - Consejo Nacional de Investigaciones Cientificas y Tecnicas) for hydroclimatic studies in the Andes. HBV.IANIGLA
+  incorporates modules for precipitation and temperature interpolation,  and also for clean and debris covered ice melt estimations. 
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Imports: Rcpp (>= 0.12.0)
+LinkingTo: Rcpp
+RoxygenNote: 6.1.1
+NeedsCompilation: yes
+Packaged: 2019-08-23 12:52:16 UTC; ezequiel
+Repository: CRAN
+Date/Publication: 2019-08-24 13:00:02 UTC
