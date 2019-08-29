@@ -121,12 +121,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // medianCpp
-int medianCpp(int x);
+int medianCpp(double x);
 RcppExport SEXP _HBV_IANIGLA_medianCpp(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(medianCpp(x));
     return rcpp_result_gen;
 END_RCPP

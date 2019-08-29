@@ -4,8 +4,8 @@ using namespace Rcpp;
 // Función auxiliar para modelo 1 UH
 
 // [[Rcpp::export]]
-int medianCpp(int x){
-  int n = ceil(x);
+int medianCpp(double x){
+  double n = ceil(x);
   NumericVector y(n);
   int out;
 

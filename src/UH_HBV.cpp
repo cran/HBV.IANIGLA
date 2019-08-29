@@ -43,7 +43,7 @@ NumericVector UH(int model, NumericVector Qg, NumericVector param){
     stop("Parameter must be Bmax >= 1");
   }
   // Defino tamaño de vectores
-  int n = ceil(Bmax); // intervalos en que divido el HU
+  double n = ceil(Bmax); // intervalos en que divido el HU
   int m = Qg.size();  // tamaño del vector de salida
   int j;              // contador que uso para un loop
 
