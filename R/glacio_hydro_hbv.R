@@ -1,0 +1,21 @@
+#' Synthetic glacio-hydrological data for modeling
+#'
+#' A dataset containing all the necessary information to simulate almost 15 year
+#' of catchment streamflow in a synthetic basin. This example was though to improve
+#' user's skills on the HBV.IANIGLA.
+#'
+#' @format A list with five elements
+#'  \describe{
+#'     \item{basin}{data frame containing elevation band names and the hypsometric values
+#'     for modeling the catchment.}
+#'     \item{tair}{numeric matrix with the air temperature series (columns) for the 15
+#'     elevation bands.}
+#'     \item{prec}{numeric matrix with the precipitation series (columns) for the 15
+#'     elevation bands.}
+#'     \item{pet}{numeric matrix with the potential evapotranspiration series (columns) for the 15
+#'     elevation bands.}
+#'     \item{qout}{numeric matrix containing the total basin discharge, the streamflow coming
+#'     from the soil portion of the basin and the part that is generated in the glaciers.}
+#'  }
+#'
+"glacio_hydro_hbv"

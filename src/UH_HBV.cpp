@@ -2,19 +2,19 @@
 #include "median.h"
 using namespace Rcpp;
 
-//#########################################################################
-// MODELOS DE HIDROGRAMAS UNITARIOS
-//#########################################################################
+// **********************************************************
+//  Author       : Ezequiel Toum
+//  Licence      : GPL V3
+//  Institution  : IANIGLA-CONICET
+//  e-mail       : etoum@mendoza-conicet.gob.ar
+//  **********************************************************
+//  HBV.IANIGLA package is distributed in the hope that it
+//  will be useful but WITHOUT ANY WARRANTY.
+//  **********************************************************
 
-//#########################################################################
-// Autor       : Ezequiel Toum
-// Licencia    : GPL V3
-// Institución : IANIGLA-CONICET
-// e-mail      : etoum@mendoza-conicet.gob.ar
-//#########################################################################
-
-// MODELO DE HIDROGRAMA UNITARIO - model
-// #1# Hidrograma unitario triangular estático
+/*
+// FUNCIÓN DE TRANSFERENCIA - model
+// #1# Función de transferencia triangular estática
 
 // DATOS DE ENTRADA - inputData
 // #1# Qg: salida total de los reservorios
@@ -29,9 +29,71 @@ using namespace Rcpp;
 
 //TENER EN CTA QUE LOS INDICES EMPIEZAN EN CERO!!!!!!!
 //LOS CEROS PARA DOUBLES VAN COMO 0.0!!!!
+ */
 
+//' @name UH
+//'
+//' @title Transfer function
+//'
+//' @description Use a triangular transfer function to adjust the timing of the
+//' simulated streamflow discharge. This module represents the runoff routing in
+//' the streams.
+//'
+//' @usage UH(
+//'   model,
+//'   Qg,
+//'   param
+//'   )
+//'
+//' @param model numeric integer with the transfer function model. The current HBV.IANIGLA
+//' model only allows for a single option.
+//' \itemize{
+//'   \item 1: triangular function with a static base.
+//' }
+//'
+//' @param Qg numeric vector with the water that gets into the stream.
+//' If you are not modeling glaciers is the output of the
+//' \code{\link{Routing_HBV}} module, otherwise, is the sum of the \code{\link{Routing_HBV}}
+//' output plus the glacier discharge coming from the \code{\link{Glacier_Disch}} module.
+//'
+//' @param param numeric vector with the following values,
+//'
+//' \strong{Model 1}
+//' \itemize{
+//'   \item \code{Bmax}: base of the transfer function triangle \eqn{[timestep]}.
+//' }
+//'
+//' @return Numeric vector with the simulated streamflow discharge.
+//'
+//' @references
+//' Bergström, S., Lindström, G., 2015. Interpretation of runoff processes in hydrological
+//' modelling—experience from the HBV approach. Hydrol. Process.
+//' 29, 3535–3545. https://doi.org/10.1002/hyp.10510
+//'
+//' Parajka, J., Merz, R., & Blöschl, G. (2007). Uncertainty and multiple objective
+//' calibration in regional water balance modelling: Case study in 320 Austrian catchments.
+//' Hydrological Processes, 21(4), 435-446. https://doi.org/10.1002/hyp.6253
+//'
+//' @examples
+//' # The following is a toy example. I strongly recommend to see
+//' # the package vignettes in order to improve your skills on HBV.IANIGLA
+//'
+//' ## Routing example
+//' inputMatrix <- cbind(runif(n = 200, max = 100, min = 0), runif(n = 200, max = 50, min = 5),
+//'                  runif(n = 100, max = 3, min = 1))
+//'
+//' routeMod1   <- Routing_HBV(model = 1, lake = TRUE, inputData = inputMatrix,
+//'                          initCond = c(10, 15, 20), param = c(0.1, 0.05, 0.001, 1, 0.8))
+//'
+//' ## UH
+//' dischOut <- UH(model = 1, Qg = routeMod1[ , 1], param = 2.2)
+//'
+//' @export
+//'
 // [[Rcpp::export]]
-NumericVector UH(int model, NumericVector Qg, NumericVector param){
+NumericVector UH(int model,
+                 NumericVector Qg,
+                 NumericVector param){
   if (model == 1){
     // HU TRIANGULAR ESTÁTICO //
 

@@ -120,6 +120,152 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// icemelt_clean
+NumericMatrix icemelt_clean(NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_icemelt_clean(SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(icemelt_clean(inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// icemelt_clean_gca
+NumericMatrix icemelt_clean_gca(NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_icemelt_clean_gca(SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(icemelt_clean_gca(inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// icemelt_debris
+NumericMatrix icemelt_debris(NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_icemelt_debris(SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(icemelt_debris(inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// icemelt_debris_gca
+NumericMatrix icemelt_debris_gca(NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_icemelt_debris_gca(SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(icemelt_debris_gca(inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// route_1r_2o
+NumericMatrix route_1r_2o(NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_route_1r_2o(SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(route_1r_2o(inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// route_1r_3o
+NumericMatrix route_1r_3o(NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_route_1r_3o(SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(route_1r_3o(inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// route_2r_2o
+NumericMatrix route_2r_2o(bool lake, NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_route_2r_2o(SEXP lakeSEXP, SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< bool >::type lake(lakeSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(route_2r_2o(lake, inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// route_2r_3o
+NumericMatrix route_2r_3o(bool lake, NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_route_2r_3o(SEXP lakeSEXP, SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< bool >::type lake(lakeSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(route_2r_3o(lake, inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// route_3r_3o
+NumericMatrix route_3r_3o(bool lake, NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_route_3r_3o(SEXP lakeSEXP, SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< bool >::type lake(lakeSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(route_3r_3o(lake, inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// snowmelt
+NumericMatrix snowmelt(NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_snowmelt(SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(snowmelt(inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
+// snowmelt_sca
+NumericMatrix snowmelt_sca(NumericMatrix inputData, NumericVector initCond, NumericVector param);
+RcppExport SEXP _HBV_IANIGLA_snowmelt_sca(SEXP inputDataSEXP, SEXP initCondSEXP, SEXP paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type inputData(inputDataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type initCond(initCondSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(snowmelt_sca(inputData, initCond, param));
+    return rcpp_result_gen;
+END_RCPP
+}
 // medianCpp
 int medianCpp(double x);
 RcppExport SEXP _HBV_IANIGLA_medianCpp(SEXP xSEXP) {
@@ -141,6 +287,17 @@ static const R_CallMethodDef CallEntries[] = {
     {"_HBV_IANIGLA_Soil_HBV", (DL_FUNC) &_HBV_IANIGLA_Soil_HBV, 4},
     {"_HBV_IANIGLA_Temp_model", (DL_FUNC) &_HBV_IANIGLA_Temp_model, 5},
     {"_HBV_IANIGLA_UH", (DL_FUNC) &_HBV_IANIGLA_UH, 3},
+    {"_HBV_IANIGLA_icemelt_clean", (DL_FUNC) &_HBV_IANIGLA_icemelt_clean, 3},
+    {"_HBV_IANIGLA_icemelt_clean_gca", (DL_FUNC) &_HBV_IANIGLA_icemelt_clean_gca, 3},
+    {"_HBV_IANIGLA_icemelt_debris", (DL_FUNC) &_HBV_IANIGLA_icemelt_debris, 3},
+    {"_HBV_IANIGLA_icemelt_debris_gca", (DL_FUNC) &_HBV_IANIGLA_icemelt_debris_gca, 3},
+    {"_HBV_IANIGLA_route_1r_2o", (DL_FUNC) &_HBV_IANIGLA_route_1r_2o, 3},
+    {"_HBV_IANIGLA_route_1r_3o", (DL_FUNC) &_HBV_IANIGLA_route_1r_3o, 3},
+    {"_HBV_IANIGLA_route_2r_2o", (DL_FUNC) &_HBV_IANIGLA_route_2r_2o, 4},
+    {"_HBV_IANIGLA_route_2r_3o", (DL_FUNC) &_HBV_IANIGLA_route_2r_3o, 4},
+    {"_HBV_IANIGLA_route_3r_3o", (DL_FUNC) &_HBV_IANIGLA_route_3r_3o, 4},
+    {"_HBV_IANIGLA_snowmelt", (DL_FUNC) &_HBV_IANIGLA_snowmelt, 3},
+    {"_HBV_IANIGLA_snowmelt_sca", (DL_FUNC) &_HBV_IANIGLA_snowmelt_sca, 3},
     {"_HBV_IANIGLA_medianCpp", (DL_FUNC) &_HBV_IANIGLA_medianCpp, 1},
     {NULL, NULL, 0}
 };

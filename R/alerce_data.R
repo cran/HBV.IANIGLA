@@ -1,0 +1,30 @@
+#' Alerce's glacier data for modeling
+#'
+#' A dataset containing all necessary information to simulate a three year
+#' glacier surface mass balance. The ice body is located on Monte Tronador,
+#' nearby the border between Argentina and Chile in the Andes of Northern Patagonia.
+#' Alerce is a medium size mountain glacier with an area of about 2.33 km2 that
+#' ranges between 1629 and 2358 \code{masl} and it shows a SE aspect (IANIGLA-ING, 2018).
+#'
+#' @format A list with five elements
+#' \describe{
+#'   \item{mass_balance}{data frame with the estimated annual mass balance and the acceptable uncertainty bounds.}
+#'   \item{mb_dates}{data frame containing the first fix days of the winter and summer mass balances.}
+#'   \item{meteo_data}{data frame with the precipitation gauge and air temperatures records. The former
+#'   series is recorded at Puerto Montt's station (Chile) and the last one is measured at Bariloche's
+#'   airport (Argentina)}
+#'   \item{topography}{data frame with: elevation zone number, minimum, maximum and mean altitude
+#'   values for the elevation range and the relative area.}
+#'   \item{station_height}{numeric vector with the stations heights. Air temperature refers to
+#'   Bariloche's airport and precipitation to Puerto Montt station. Units are in \code{masl} (meters
+#'   above sea level).}
+#' }
+#'
+#' @references
+#'
+#' IANIGLA-ING. IANIGLA-Inventario Nacional de Glaciares. 2018. Informe de las subcuencas de los
+#' ríos Manso, Villegas y Foyel. Cuenca de los ríos Manso y Puelo. IANIGLA-CONICET, Ministerio
+#' de Ambiente y Desarrollo Sustentable de la Nación. Technical report, IANIGLA, 2018b.
+#' URL http://www.glaciaresargentinos.gob.ar . [p8]
+#'
+"alerce_data"

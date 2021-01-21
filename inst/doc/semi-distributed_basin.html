@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Ezequiel Toum" />
+
+<meta name="date" content="2021-01-21" />
+
+<title>Chapter 3: Semi-distributed hydrological modeling</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Chapter 3: Semi-distributed hydrological modeling</h1>
+<h4 class="author">Ezequiel Toum</h4>
+<h4 class="date">2021-01-21</h4>
+
+
+
+<div id="the-problem" class="section level2">
+<h2>The problem</h2>
+<p>Now we move forward to a semi-distributed catchment case. This means that we are conceiving the basin as a set of homogeneous polygons that are selected by some criteria; in any basin the hydrologist is faced with a variety of geology, soils, vegetation, land use and topographic characteristics that affects the precipitation-runoff generation. One possible solution to deal with such a complexity is to consider that there are some sectors that behave (e.g.: in terms of runoff generation) in a similar way, hence we can split the basin in what the modeler can consider as hydrological <em>homogeneous</em> areas. As you can imagine, the criteria is not unique and depends on many factors: modeling objectives, knowledge about the runoff generation processes in the catchment, available input data and numerical models, among others <span class="citation">(Beven 2012)</span>.</p>
+<p>In this case study we are going to work on a perfect fit case (again a synthetic basin). The catchment has been discretised in elevation bands (keeping in mind a mountain basin case).<br />
+After this vignette is expect that you:</p>
+<ul>
+<li>understand how to construct a semi-distributed HBV hydrological model.</li>
+<li>calibrate the parameters in order to get a perfect river discharge fit.</li>
+<li>study the effects of changing the snow module parameters in the streamflow discharge.</li>
+</ul>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(HBV.IANIGLA)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">data</span>(<span class="st">&quot;semi_distributed_hbv&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">str</span>(semi_distributed_hbv)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; List of 5</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt;  $ basin:&#39;data.frame&#39;:   15 obs. of  4 variables:</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt;   ..$ elev_band: chr [1:15] &quot;eb_1&quot; &quot;eb_2&quot; &quot;eb_3&quot; &quot;eb_4&quot; ...</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt;   ..$ area(km2): num [1:15] 10 15 17 20 25 18 17 16 14 12 ...</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt;   ..$ rel_area : num [1:15] 0.0535 0.0802 0.0909 0.107 0.1337 ...</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt;   ..$ h(masl)  : num [1:15] 2000 2200 2400 2600 2800 3000 3200 3400 3600 3800 ...</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt;  $ tair : num [1:5310, 1:15] 24.4 26.9 27 24.5 22.1 ...</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt;  $ prec : num [1:5310, 1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt;  $ pet  : num [1:5310, 1:15] 0 0.999 0.997 0.993 0.988 ...</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt;  $ qout : num [1:5310] 0e+00 0e+00 0e+00 2e-04 5e-04 4e-04 4e-04 4e-04 4e-04 4e-04 ...</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt;  - attr(*, &quot;comment&quot;)= chr &quot;Semi-distributed HBV model input data&quot;</span></span></code></pre></div>
+<p>To get more details about the dataset just type <code>?semi_distributed_hbv</code></p>
+</div>
+<div id="building-a-semi-distributed-hydrological-model" class="section level2">
+<h2>Building a semi-distributed hydrological model</h2>
+<p>For this exercise is supposed that we have just one type of vegetation soil and that the runoff generation is controlled by the snow accumulation and melting process. As this basin is located in a mountain region, we consider a mean and homogeneous snowpack evolution within a pre-defined elevation range.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">## brief arguments description</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="co"># basin: data frame with the same structure of the data(&quot;semi_distributed_hbv) (colnames included).</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="co"># tair: numeric matrix with air temperature inputs. </span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="co"># precip: numeric matrix with precipitation inputs. </span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="co"># pet: numeric matrix with potential eavapotranspiration inputs. </span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="co"># param_snow: numeric vector with snow module parameters.</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="co"># param_soil: numeric vector with soil moisture parameters.</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="co"># param_routing: numeric vector with the routing parameters.</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>  <span class="co"># param_tf: numeric vector with the transfer function parameter.</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>  <span class="co"># init_snow: numeric value with initial snow water equivalent. Default value being 20 mm.</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  <span class="co"># init_soil: numeric value with initial soil moisture content. Default value being 100 mm.</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>  <span class="co"># init_routing: numeric vector with bucket water initial values. Default values are 0 mm.</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">## output</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>  <span class="co"># simulated streamflow series.</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>hydrological_hbv &lt;-<span class="st"> </span><span class="cf">function</span>(basin,</span>
+<span id="cb2-16"><a href="#cb2-16"></a>                             tair,</span>
+<span id="cb2-17"><a href="#cb2-17"></a>                             precip,</span>
+<span id="cb2-18"><a href="#cb2-18"></a>                             pet,</span>
+<span id="cb2-19"><a href="#cb2-19"></a>                             param_snow,</span>
+<span id="cb2-20"><a href="#cb2-20"></a>                             param_soil,</span>
+<span id="cb2-21"><a href="#cb2-21"></a>                             param_route,</span>
+<span id="cb2-22"><a href="#cb2-22"></a>                             param_tf,</span>
+<span id="cb2-23"><a href="#cb2-23"></a>                             <span class="dt">init_snow =</span> <span class="dv">20</span>,</span>
+<span id="cb2-24"><a href="#cb2-24"></a>                             <span class="dt">init_soil =</span> <span class="dv">0</span>,</span>
+<span id="cb2-25"><a href="#cb2-25"></a>                             <span class="dt">init_routing =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>) </span>
+<span id="cb2-26"><a href="#cb2-26"></a>                             ){</span>
+<span id="cb2-27"><a href="#cb2-27"></a>  n_it &lt;-<span class="st"> </span><span class="kw">nrow</span>(basin)</span>
+<span id="cb2-28"><a href="#cb2-28"></a></span>
+<span id="cb2-29"><a href="#cb2-29"></a>  <span class="co"># create output lists</span></span>
+<span id="cb2-30"><a href="#cb2-30"></a>  snow_module  &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-31"><a href="#cb2-31"></a>  soil_module  &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-32"><a href="#cb2-32"></a>  route_module &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-33"><a href="#cb2-33"></a>  tf_module    &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-34"><a href="#cb2-34"></a></span>
+<span id="cb2-35"><a href="#cb2-35"></a>  <span class="co"># snow and soil module in every elevation band</span></span>
+<span id="cb2-36"><a href="#cb2-36"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_it){</span>
+<span id="cb2-37"><a href="#cb2-37"></a>    snow_module[[ i ]] &lt;-</span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="st">      </span><span class="kw">SnowGlacier_HBV</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">inputData =</span> <span class="kw">cbind</span>(tair[ , i], precip[ , i]),</span>
+<span id="cb2-39"><a href="#cb2-39"></a>                      <span class="dt">initCond =</span>  <span class="kw">c</span>(init_snow, <span class="dv">2</span>), <span class="dt">param =</span> param_snow)</span>
+<span id="cb2-40"><a href="#cb2-40"></a>    soil_module[[ i ]] &lt;-</span>
+<span id="cb2-41"><a href="#cb2-41"></a><span class="st">      </span><span class="kw">Soil_HBV</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">inputData =</span> <span class="kw">cbind</span>(snow_module[[i]][ , <span class="dv">5</span>] , pet[ , i]),</span>
+<span id="cb2-42"><a href="#cb2-42"></a>               <span class="dt">initCond =</span> <span class="kw">c</span>(init_soil, basin[i, <span class="st">&#39;rel_area&#39;</span>]), <span class="dt">param =</span> param_soil )</span>
+<span id="cb2-43"><a href="#cb2-43"></a></span>
+<span id="cb2-44"><a href="#cb2-44"></a>  } <span class="co"># end for</span></span>
+<span id="cb2-45"><a href="#cb2-45"></a></span>
+<span id="cb2-46"><a href="#cb2-46"></a>  <span class="co"># get total soil discharge</span></span>
+<span id="cb2-47"><a href="#cb2-47"></a>  soil_disch &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span>n_it, <span class="dt">FUN =</span> <span class="cf">function</span>(x){</span>
+<span id="cb2-48"><a href="#cb2-48"></a>    out &lt;-<span class="st"> </span>soil_module[[x]][ , <span class="dv">1</span>]</span>
+<span id="cb2-49"><a href="#cb2-49"></a>  })</span>
+<span id="cb2-50"><a href="#cb2-50"></a>  soil_disch &lt;-<span class="st"> </span><span class="kw">Reduce</span>(<span class="dt">f =</span> <span class="st">`</span><span class="dt">+</span><span class="st">`</span>, <span class="dt">x =</span> soil_disch)</span>
+<span id="cb2-51"><a href="#cb2-51"></a></span>
+<span id="cb2-52"><a href="#cb2-52"></a>  <span class="co"># route module</span></span>
+<span id="cb2-53"><a href="#cb2-53"></a>  route_module &lt;-<span class="st"> </span><span class="kw">Routing_HBV</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">lake =</span> F, <span class="dt">inputData =</span> <span class="kw">as.matrix</span>(soil_disch),</span>
+<span id="cb2-54"><a href="#cb2-54"></a>                              <span class="dt">initCond =</span> init_routing, <span class="dt">param =</span> param_route )</span>
+<span id="cb2-55"><a href="#cb2-55"></a></span>
+<span id="cb2-56"><a href="#cb2-56"></a>  <span class="co"># transfer function</span></span>
+<span id="cb2-57"><a href="#cb2-57"></a>  tf_module &lt;-<span class="st"> </span><span class="kw">round</span>(</span>
+<span id="cb2-58"><a href="#cb2-58"></a>    <span class="kw">UH</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">Qg =</span> route_module[ , <span class="dv">1</span>], <span class="dt">param =</span> param_tf), <span class="dv">4</span></span>
+<span id="cb2-59"><a href="#cb2-59"></a>  )</span>
+<span id="cb2-60"><a href="#cb2-60"></a></span>
+<span id="cb2-61"><a href="#cb2-61"></a>  <span class="kw">return</span>(tf_module)</span>
+<span id="cb2-62"><a href="#cb2-62"></a></span>
+<span id="cb2-63"><a href="#cb2-63"></a></span>
+<span id="cb2-64"><a href="#cb2-64"></a>}<span class="co"># end fun</span></span></code></pre></div>
+<p>As in the <strong>Lumped model</strong> case, this is just a way of constructing an HBV semi-distributed model but not the only one.</p>
+</div>
+<div id="calibrating-the-parameters" class="section level2">
+<h2>Calibrating the parameters</h2>
+<p>In the next lines I will show you how to generate many parameter sets in order to get close to the correct one. Remember that we are talking about <em>the correct parameter set</em> because is a synthetic case. In real world problems this will not be the case.</p>
+<blockquote>
+<p>The calibrating issue has been focus of a lot of debate and research in the hydrological modeling field, I recommend the following material for the interested reader:</p>
+<ul>
+<li>A manifesto for the equifinality thesis <span class="citation">(Beven 2006)</span>.</li>
+<li>Sensitivity analysis of environmental models: A systematic review with practical workflow <span class="citation">(Pianosi et al. 2016)</span>.</li>
+<li>Rainfall-runoff modelling <span class="citation">(Beven 2012)</span>.</li>
+<li>Environmental Modelling: An Uncertain Future? <span class="citation">(Beven 2008)</span>.</li>
+</ul>
+</blockquote>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># first we are going to create set the parameter range</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="co"># snow module</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>snow_range &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="dt">sfcf =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>),</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="dt">tr   =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="dt">tt   =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="dt">fm   =</span> <span class="kw">c</span>(<span class="fl">1.5</span>, <span class="dv">4</span>)</span>
+<span id="cb3-8"><a href="#cb3-8"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a>  <span class="co"># soil module</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>soil_range &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>
+<span id="cb3-12"><a href="#cb3-12"></a>  <span class="dt">fc   =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">200</span>),</span>
+<span id="cb3-13"><a href="#cb3-13"></a>  <span class="dt">lp   =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>),</span>
+<span id="cb3-14"><a href="#cb3-14"></a>  <span class="dt">beta =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb3-15"><a href="#cb3-15"></a>)</span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a>  <span class="co"># routing module (here I will give you the correct values)</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a>routing_range &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>
+<span id="cb3-19"><a href="#cb3-19"></a>  <span class="dt">k0   =</span> <span class="kw">c</span>(<span class="fl">0.09</span>, <span class="fl">0.09</span>),</span>
+<span id="cb3-20"><a href="#cb3-20"></a>  <span class="dt">k1   =</span> <span class="kw">c</span>(<span class="fl">0.07</span>, <span class="fl">0.07</span>),</span>
+<span id="cb3-21"><a href="#cb3-21"></a>  <span class="dt">k2   =</span> <span class="kw">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>),</span>
+<span id="cb3-22"><a href="#cb3-22"></a>  <span class="dt">uzl  =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">5</span>),</span>
+<span id="cb3-23"><a href="#cb3-23"></a>  <span class="dt">perc =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb3-24"><a href="#cb3-24"></a>)</span>
+<span id="cb3-25"><a href="#cb3-25"></a></span>
+<span id="cb3-26"><a href="#cb3-26"></a>  <span class="co"># transfer function module (I will give the correct value)</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a>tf_range &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>
+<span id="cb3-28"><a href="#cb3-28"></a>  <span class="dt">bmax =</span> <span class="kw">c</span>(<span class="fl">2.25</span>, <span class="fl">2.25</span>)</span>
+<span id="cb3-29"><a href="#cb3-29"></a>)</span></code></pre></div>
+<p>Then we are going to condense the parameter ranges in a matrix,</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>param_range &lt;-<span class="st"> </span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw">rbind</span>(</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    snow_range,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    soil_range,</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    routing_range,</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    tf_range</span>
+<span id="cb4-7"><a href="#cb4-7"></a>  )</span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="kw">head</span>(param_range)</span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt;       [,1]  [,2]</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; sfcf   0.0   1.5</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; tr    -1.0   1.0</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; tt     0.0   3.0</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; fm     1.5   4.0</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; fc   100.0 200.0</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; lp     0.5   1.0</span></span></code></pre></div>
+<p>In the next step we will generate random sets of parameters. Then we will use them to run the model and save our goodness of fit function,</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># set the number of model runs that you want to try</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>n_run &lt;-<span class="st"> </span><span class="dv">1000</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># build the matrix</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>n_it &lt;-<span class="st"> </span><span class="kw">nrow</span>(param_range)</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a>param_sets &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA_real_</span>, <span class="dt">nrow =</span> n_run, <span class="dt">ncol =</span> n_it)</span>
+<span id="cb5-8"><a href="#cb5-8"></a></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="kw">colnames</span>(param_sets) &lt;-<span class="st"> </span><span class="kw">rownames</span>(param_range)</span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_it){</span>
+<span id="cb5-11"><a href="#cb5-11"></a>  </span>
+<span id="cb5-12"><a href="#cb5-12"></a>  param_sets[ , i] &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dt">n =</span> n_run, </span>
+<span id="cb5-13"><a href="#cb5-13"></a>                            <span class="dt">min =</span> param_range[i, <span class="dv">1</span>],</span>
+<span id="cb5-14"><a href="#cb5-14"></a>                            <span class="dt">max =</span> param_range[i, <span class="dv">2</span>]</span>
+<span id="cb5-15"><a href="#cb5-15"></a>                            )</span>
+<span id="cb5-16"><a href="#cb5-16"></a>    </span>
+<span id="cb5-17"><a href="#cb5-17"></a>}</span>
+<span id="cb5-18"><a href="#cb5-18"></a></span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="kw">head</span>(param_sets)</span>
+<span id="cb5-20"><a href="#cb5-20"></a><span class="co">#&gt;           sfcf         tr       tt       fm       fc        lp     beta   k0</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#&gt; [1,] 0.2808843 -0.1988102 2.248042 1.670547 127.2266 0.7437620 1.130969 0.09</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#&gt; [2,] 0.2514527  0.4926597 1.752910 3.756478 142.2262 0.5810407 2.783933 0.09</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="co">#&gt; [3,] 0.9610129 -0.1669551 2.128964 2.645919 163.3129 0.9437365 1.434353 0.09</span></span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="co">#&gt; [4,] 1.4435390 -0.1261128 2.732200 1.764122 184.6563 0.5170997 1.513836 0.09</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="co">#&gt; [5,] 0.9952805 -0.1296802 1.149875 2.874869 139.4242 0.8517132 2.989876 0.09</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="co">#&gt; [6,] 0.4596527 -0.1342559 2.927786 3.815124 141.1265 0.5239499 1.216035 0.09</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a><span class="co">#&gt;        k1   k2 uzl perc bmax</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="co">#&gt; [1,] 0.07 0.05   5    2 2.25</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="co">#&gt; [2,] 0.07 0.05   5    2 2.25</span></span>
+<span id="cb5-30"><a href="#cb5-30"></a><span class="co">#&gt; [3,] 0.07 0.05   5    2 2.25</span></span>
+<span id="cb5-31"><a href="#cb5-31"></a><span class="co">#&gt; [4,] 0.07 0.05   5    2 2.25</span></span>
+<span id="cb5-32"><a href="#cb5-32"></a><span class="co">#&gt; [5,] 0.07 0.05   5    2 2.25</span></span>
+<span id="cb5-33"><a href="#cb5-33"></a><span class="co">#&gt; [6,] 0.07 0.05   5    2 2.25</span></span></code></pre></div>
+<p>Finally we run our semi-distributed model,</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># goodness of fit vector</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>gof &lt;-<span class="st"> </span><span class="kw">c</span>()</span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># make a loop</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_run){</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  streamflow &lt;-<span class="st"> </span><span class="kw">hydrological_hbv</span>(</span>
+<span id="cb6-7"><a href="#cb6-7"></a>                             <span class="dt">basin =</span> semi_distributed_hbv<span class="op">$</span>basin,</span>
+<span id="cb6-8"><a href="#cb6-8"></a>                             <span class="dt">tair =</span> semi_distributed_hbv<span class="op">$</span>tair,</span>
+<span id="cb6-9"><a href="#cb6-9"></a>                             <span class="dt">precip =</span> semi_distributed_hbv<span class="op">$</span>prec,</span>
+<span id="cb6-10"><a href="#cb6-10"></a>                             <span class="dt">pet =</span> semi_distributed_hbv<span class="op">$</span>pet,</span>
+<span id="cb6-11"><a href="#cb6-11"></a>                             <span class="dt">param_snow =</span> param_sets[i, <span class="kw">rownames</span>(snow_range) ],</span>
+<span id="cb6-12"><a href="#cb6-12"></a>                             <span class="dt">param_soil =</span> param_sets[i, <span class="kw">rownames</span>(soil_range)],</span>
+<span id="cb6-13"><a href="#cb6-13"></a>                             <span class="dt">param_route =</span> param_sets[i, <span class="kw">rownames</span>(routing_range)],</span>
+<span id="cb6-14"><a href="#cb6-14"></a>                             <span class="dt">param_tf =</span> param_sets[i, <span class="kw">rownames</span>(tf_range)]</span>
+<span id="cb6-15"><a href="#cb6-15"></a>                             )</span>
+<span id="cb6-16"><a href="#cb6-16"></a>  </span>
+<span id="cb6-17"><a href="#cb6-17"></a>  gof[i] &lt;-<span class="st"> </span><span class="kw">cor</span>(<span class="dt">x =</span> streamflow, <span class="dt">y =</span> semi_distributed_hbv<span class="op">$</span>qout)</span>
+<span id="cb6-18"><a href="#cb6-18"></a>}</span>
+<span id="cb6-19"><a href="#cb6-19"></a></span>
+<span id="cb6-20"><a href="#cb6-20"></a>param_sets &lt;-<span class="st"> </span><span class="kw">cbind</span>(param_sets, gof)</span>
+<span id="cb6-21"><a href="#cb6-21"></a></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="kw">head</span>(param_sets)</span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#&gt;           sfcf         tr       tt       fm       fc        lp     beta   k0</span></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; [1,] 0.2808843 -0.1988102 2.248042 1.670547 127.2266 0.7437620 1.130969 0.09</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt; [2,] 0.2514527  0.4926597 1.752910 3.756478 142.2262 0.5810407 2.783933 0.09</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; [3,] 0.9610129 -0.1669551 2.128964 2.645919 163.3129 0.9437365 1.434353 0.09</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#&gt; [4,] 1.4435390 -0.1261128 2.732200 1.764122 184.6563 0.5170997 1.513836 0.09</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#&gt; [5,] 0.9952805 -0.1296802 1.149875 2.874869 139.4242 0.8517132 2.989876 0.09</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#&gt; [6,] 0.4596527 -0.1342559 2.927786 3.815124 141.1265 0.5239499 1.216035 0.09</span></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="co">#&gt;        k1   k2 uzl perc bmax       gof</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a><span class="co">#&gt; [1,] 0.07 0.05   5    2 2.25 0.9349033</span></span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="co">#&gt; [2,] 0.07 0.05   5    2 2.25 0.9104437</span></span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="co">#&gt; [3,] 0.07 0.05   5    2 2.25 0.9961141</span></span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="co">#&gt; [4,] 0.07 0.05   5    2 2.25 0.9797558</span></span>
+<span id="cb6-35"><a href="#cb6-35"></a><span class="co">#&gt; [5,] 0.07 0.05   5    2 2.25 0.9882781</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a><span class="co">#&gt; [6,] 0.07 0.05   5    2 2.25 0.9600641</span></span></code></pre></div>
+<p>Is time to extract the parameter set with the maximum <strong>gof</strong> value,</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># get the row index</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>max_gof   &lt;-<span class="st"> </span><span class="kw">which.max</span>(param_sets[ , <span class="st">&quot;gof&quot;</span>])</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co"># extract the parameter set</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>param_opt &lt;-<span class="st"> </span>param_sets[max_gof, ]</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a>param_opt</span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt;         sfcf           tr           tt           fm           fc           lp </span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt;   1.07377743   0.02083456   1.15235790   1.92040776 145.75885478   0.95564897 </span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt;         beta           k0           k1           k2          uzl         perc </span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt;   1.46933269   0.09000000   0.07000000   0.05000000   5.00000000   2.00000000 </span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt;         bmax          gof </span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt;   2.25000000   0.99744171</span></span></code></pre></div>
+<p>Now compare your best parameter set with the ones that I used to generate the catchment streamflow output,</p>
+<ul>
+<li><code>param_snow = c(sfcf = 1.1, tr = 0, tt = 0, fm = 1.75)</code></li>
+<li><code>param_soil = c(fc = 150, lp = 0.90, beta = 1.5)</code></li>
+</ul>
+<p><strong>Now is your turn</strong></p>
+<ul>
+<li>Are your best parameter set values far away from the true ones?</li>
+<li>If your previous answer is <strong>yes</strong> is time to take a breath and think, what is happening? Discuss with your partners…</li>
+<li>Maybe is time not only to look at the streamflow discharge but also to the actual evapotranspiration and soil moisture series.</li>
+</ul>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-beven:2006">
+<p>Beven, Keith. 2006. “A Manifesto for the Equifinality Thesis.” <em>Journal of Hydrology</em>, The model parameter estimation experiment, 320 (1): 18–36. <a href="https://doi.org/10.1016/j.jhydrol.2005.07.007">https://doi.org/10.1016/j.jhydrol.2005.07.007</a>.</p>
+</div>
+<div id="ref-beven:2008">
+<p>———. 2008. <em>Environmental Modelling: An Uncertain Future?</em> 1 edition. London: CRC Press.</p>
+</div>
+<div id="ref-beven:2012">
+<p>Beven, Keith J. 2012. <em>Rainfall - Runoff Modelling</em>. 2 edition. Chichester: Wiley.</p>
+</div>
+<div id="ref-pianosi:2016">
+<p>Pianosi, Francesca, Keith Beven, Jim Freer, Jim W. Hall, Jonathan Rougier, David B. Stephenson, and Thorsten Wagener. 2016. “Sensitivity Analysis of Environmental Models: A Systematic Review with Practical Workflow.” <em>Environmental Modelling &amp; Software</em> 79 (May): 214–32. <a href="https://doi.org/10.1016/j.envsoft.2016.02.008">https://doi.org/10.1016/j.envsoft.2016.02.008</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

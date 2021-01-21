@@ -1,0 +1,12 @@
+citHeader("To cite 'HBV.IANIGLA' in publications use:")
+
+citEntry(entry = "manual",
+	 title = "{HBV.IANIGLA}: Modular Hydrological Model",
+	 author = as.person("Ezequiel Toum"),
+   year = "2021",
+	 note = "0.2.0",
+	 url = "https://CRAN.R-project.org/package=HBV.IANIGLA",
+	 textVersion =
+         paste("Ezequiel Toum (", "2021","). ",
+               "'HBV.IANIGLA': Modular Hydrological Model. ", "version 0.2.0", ".", sep = "")
+)

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Ezequiel Toum" />
+
+<meta name="date" content="2021-01-21" />
+
+<title>Chapter 4: Semi-distributed glacio-hydrological modeling</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Chapter 4: Semi-distributed glacio-hydrological modeling</h1>
+<h4 class="author">Ezequiel Toum</h4>
+<h4 class="date">2021-01-21</h4>
+
+
+
+<div id="the-problem" class="section level2">
+<h2>The problem</h2>
+<p>This case is about adding to our previous example (<strong>Semi-distributed hydrological model</strong>) glaciers. Again, is a synthetic case where you will have to:</p>
+<ul>
+<li>understand how to consider glaciers in a semi-distributed HBV hydrological model.</li>
+<li>calibrate the glacier’s related parameters.</li>
+<li>study their effect (sensitivity analysis) on the basin discharge.</li>
+</ul>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(HBV.IANIGLA)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">data</span>(<span class="st">&quot;glacio_hydro_hbv&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">str</span>(glacio_hydro_hbv)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; List of 5</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt;  $ baisn:&#39;data.frame&#39;:   15 obs. of  7 variables:</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt;   ..$ elev_band      : chr [1:15] &quot;eb_1&quot; &quot;eb_2&quot; &quot;eb_3&quot; &quot;eb_4&quot; ...</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt;   ..$ soil_area(km2) : num [1:15] 10 15 17 20 25 18 17 16 14 12 ...</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt;   ..$ ice_area(km2)  : num [1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt;   ..$ total_area(km2): num [1:15] 10 15 17 20 25 18 17 16 14 12 ...</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt;   ..$ rel_soil       : num [1:15] 0.0526 0.0789 0.0894 0.1052 0.1314 ...</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt;   ..$ rel_ice        : num [1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt;   ..$ h(masl)        : num [1:15] 2000 2200 2400 2600 2800 3000 3200 3400 3600 3800 ...</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt;  $ tair : num [1:5310, 1:15] 24.4 26.9 27 24.5 22.1 ...</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt;  $ prec : num [1:5310, 1:15] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt;  $ pet  : num [1:5310, 1:15] 0 0.999 0.997 0.993 0.988 ...</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt;  $ qout : num [1:5310, 1:3] 0.0021 0.0091 0.0218 0.0438 0.0617 0.0711 0.0774 0.0809 0.0858 0.0936 ...</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="co">#&gt;   ..- attr(*, &quot;dimnames&quot;)=List of 2</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="co">#&gt;   .. ..$ : NULL</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="co">#&gt;   .. ..$ : chr [1:3] &quot;total&quot; &quot;soil&quot; &quot;glacier&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt;  - attr(*, &quot;comment&quot;)= chr &quot;Semi-distributed glacio-hydrological HBV model input data&quot;</span></span></code></pre></div>
+<p>To get more details about the dataset just type <code>?glacio_hydro_hbv</code></p>
+</div>
+<div id="adding-the-glacier-routines" class="section level2">
+<h2>Adding the glacier routines</h2>
+<p>Note that in this case we have to add the parameters and the initial conditions arguments for the glacier surface mass balance function (<strong>SnowGlacier()</strong>) and for the glacier runoff routing (<strong>Glacier_Disch()</strong>).</p>
+<ul>
+<li><strong>Advice</strong>: before reading the code, take a look at the dataset again (<code>?glacio_hydro_hbv</code>) and try to build your own HBV glacio-hydrological model.</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">## brief arguments description</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="co"># basin: data frame with the same structure of the data(&quot;glacio_hydro_hbv) (colnames included).</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="co"># tair: numeric matrix with air temperature inputs. </span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="co"># precip: numeric matrix with precipitation inputs. </span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="co"># pet: numeric matrix with potential eavapotranspiration inputs. </span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="co"># param_snow: numeric vector with snow module parameters.</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="co"># param_ice: numeric vector with glacier parameters.</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="co"># param_soil: numeric vector with soil moisture parameters.</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>  <span class="co"># param_route: numeric vector with the routing parameters.</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>  <span class="co"># param_route_ice: numeric vector with the glacier routing parameters.</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  <span class="co"># param_tf: numeric vector with the transfer function parameter.</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>  <span class="co"># init_snow: numeric value with initial snow water equivalent. Default value being 20 mm.</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="co"># init_ice: numeric value with initial snow water equivalent of the glaciers. Default value</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>  <span class="co"># being 20 mm.</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>  <span class="co"># init_soil: numeric value with initial soil moisture content. Default value being 0 mm.</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a>  <span class="co"># init_route: numeric vector with bucket water initial values. Default values are 0 mm.</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a>  <span class="co"># init_route_ice: numeric value with glacier bucket initial value. Default values are 0 mm.</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="co">## output</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a>  <span class="co"># simulated streamflow series.</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a>glacio_hydrological_hbv &lt;-<span class="st"> </span><span class="cf">function</span>(basin,</span>
+<span id="cb2-21"><a href="#cb2-21"></a>                                    tair,</span>
+<span id="cb2-22"><a href="#cb2-22"></a>                                    precip,</span>
+<span id="cb2-23"><a href="#cb2-23"></a>                                    pet,</span>
+<span id="cb2-24"><a href="#cb2-24"></a>                                    param_snow,</span>
+<span id="cb2-25"><a href="#cb2-25"></a>                                    param_ice,</span>
+<span id="cb2-26"><a href="#cb2-26"></a>                                    param_soil,</span>
+<span id="cb2-27"><a href="#cb2-27"></a>                                    param_route,</span>
+<span id="cb2-28"><a href="#cb2-28"></a>                                    param_route_ice,</span>
+<span id="cb2-29"><a href="#cb2-29"></a>                                    param_tf,</span>
+<span id="cb2-30"><a href="#cb2-30"></a>                                    <span class="dt">init_snow =</span> <span class="dv">20</span>,</span>
+<span id="cb2-31"><a href="#cb2-31"></a>                                    <span class="dt">init_ice =</span> <span class="dv">20</span>,</span>
+<span id="cb2-32"><a href="#cb2-32"></a>                                    <span class="dt">init_soil =</span> <span class="dv">0</span>,</span>
+<span id="cb2-33"><a href="#cb2-33"></a>                                    <span class="dt">init_route =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb2-34"><a href="#cb2-34"></a>                                    <span class="dt">init_route_ice =</span> <span class="dv">0</span></span>
+<span id="cb2-35"><a href="#cb2-35"></a>                                    ){</span>
+<span id="cb2-36"><a href="#cb2-36"></a>  n_it &lt;-<span class="st"> </span><span class="kw">nrow</span>(basin)</span>
+<span id="cb2-37"><a href="#cb2-37"></a></span>
+<span id="cb2-38"><a href="#cb2-38"></a>  <span class="co"># create output lists</span></span>
+<span id="cb2-39"><a href="#cb2-39"></a>  snow_module   &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-40"><a href="#cb2-40"></a>  ice_module    &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-41"><a href="#cb2-41"></a>  soil_module   &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-42"><a href="#cb2-42"></a>  route_module  &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-43"><a href="#cb2-43"></a>  route_ice_mod &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-44"><a href="#cb2-44"></a>  tf_module     &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-45"><a href="#cb2-45"></a></span>
+<span id="cb2-46"><a href="#cb2-46"></a>  <span class="co"># snow and soil module in every elevation band</span></span>
+<span id="cb2-47"><a href="#cb2-47"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_it){</span>
+<span id="cb2-48"><a href="#cb2-48"></a>    snow_module[[ i ]] &lt;-</span>
+<span id="cb2-49"><a href="#cb2-49"></a><span class="st">      </span><span class="kw">SnowGlacier_HBV</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">inputData =</span> <span class="kw">cbind</span>(tair[ , i], precip[ , i]),</span>
+<span id="cb2-50"><a href="#cb2-50"></a>                      <span class="dt">initCond =</span>  <span class="kw">c</span>(init_snow, <span class="dv">2</span>), <span class="dt">param =</span> param_snow)</span>
+<span id="cb2-51"><a href="#cb2-51"></a></span>
+<span id="cb2-52"><a href="#cb2-52"></a>    ice_module[[ i ]] &lt;-</span>
+<span id="cb2-53"><a href="#cb2-53"></a><span class="st">      </span><span class="kw">SnowGlacier_HBV</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">inputData =</span> <span class="kw">cbind</span>(tair[ , i], precip[ , i]),</span>
+<span id="cb2-54"><a href="#cb2-54"></a>                      <span class="dt">initCond =</span>  <span class="kw">c</span>(init_ice, <span class="dv">1</span>, basin[i, <span class="st">&#39;rel_ice&#39;</span>]), <span class="dt">param =</span> param_ice)</span>
+<span id="cb2-55"><a href="#cb2-55"></a></span>
+<span id="cb2-56"><a href="#cb2-56"></a>    soil_module[[ i ]] &lt;-</span>
+<span id="cb2-57"><a href="#cb2-57"></a><span class="st">      </span><span class="kw">Soil_HBV</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">inputData =</span> <span class="kw">cbind</span>(snow_module[[i]][ , <span class="dv">5</span>] , pet[ , i]),</span>
+<span id="cb2-58"><a href="#cb2-58"></a>               <span class="dt">initCond =</span> <span class="kw">c</span>(init_soil, basin[i, <span class="st">&#39;rel_soil&#39;</span>]), <span class="dt">param =</span> param_soil )</span>
+<span id="cb2-59"><a href="#cb2-59"></a></span>
+<span id="cb2-60"><a href="#cb2-60"></a>  } <span class="co"># end for</span></span>
+<span id="cb2-61"><a href="#cb2-61"></a></span>
+<span id="cb2-62"><a href="#cb2-62"></a>  <span class="co"># get total soil discharge</span></span>
+<span id="cb2-63"><a href="#cb2-63"></a>  soil_disch &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span>n_it, <span class="dt">FUN =</span> <span class="cf">function</span>(x){</span>
+<span id="cb2-64"><a href="#cb2-64"></a>    out &lt;-<span class="st"> </span>soil_module[[x]][ , <span class="dv">1</span>]</span>
+<span id="cb2-65"><a href="#cb2-65"></a>  })</span>
+<span id="cb2-66"><a href="#cb2-66"></a>  soil_disch &lt;-<span class="st"> </span><span class="kw">Reduce</span>(<span class="dt">f =</span> <span class="st">`</span><span class="dt">+</span><span class="st">`</span>, <span class="dt">x =</span> soil_disch)</span>
+<span id="cb2-67"><a href="#cb2-67"></a></span>
+<span id="cb2-68"><a href="#cb2-68"></a>  <span class="co"># get swe and total ice melt for all glacier area</span></span>
+<span id="cb2-69"><a href="#cb2-69"></a>  ice_disch &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span>n_it, <span class="dt">FUN =</span> <span class="cf">function</span>(x){</span>
+<span id="cb2-70"><a href="#cb2-70"></a>    out &lt;-<span class="st"> </span>ice_module[[x]][ , <span class="dv">9</span>]</span>
+<span id="cb2-71"><a href="#cb2-71"></a>  })</span>
+<span id="cb2-72"><a href="#cb2-72"></a>  ice_disch &lt;-<span class="st"> </span><span class="kw">Reduce</span>(<span class="dt">f =</span> <span class="st">`</span><span class="dt">+</span><span class="st">`</span>, <span class="dt">x =</span> ice_disch)</span>
+<span id="cb2-73"><a href="#cb2-73"></a></span>
+<span id="cb2-74"><a href="#cb2-74"></a>  ice_swe   &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span>n_it, <span class="dt">FUN =</span> <span class="cf">function</span>(x){</span>
+<span id="cb2-75"><a href="#cb2-75"></a>    out &lt;-<span class="st"> </span>ice_module[[x]][ , <span class="dv">3</span>] <span class="op">*</span><span class="st">  </span>(basin[x, <span class="st">&#39;rel_ice&#39;</span>] <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(basin[ , <span class="st">&#39;rel_ice&#39;</span>]) )</span>
+<span id="cb2-76"><a href="#cb2-76"></a>  })</span>
+<span id="cb2-77"><a href="#cb2-77"></a>  ice_swe &lt;-<span class="st"> </span><span class="kw">Reduce</span>(<span class="dt">f =</span> <span class="st">`</span><span class="dt">+</span><span class="st">`</span>, <span class="dt">x =</span> ice_swe)</span>
+<span id="cb2-78"><a href="#cb2-78"></a></span>
+<span id="cb2-79"><a href="#cb2-79"></a>  <span class="co"># route module</span></span>
+<span id="cb2-80"><a href="#cb2-80"></a>  route_module &lt;-<span class="st"> </span><span class="kw">Routing_HBV</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">lake =</span> F, <span class="dt">inputData =</span> <span class="kw">as.matrix</span>(soil_disch),</span>
+<span id="cb2-81"><a href="#cb2-81"></a>                              <span class="dt">initCond =</span> init_route, <span class="dt">param =</span> param_route )</span>
+<span id="cb2-82"><a href="#cb2-82"></a></span>
+<span id="cb2-83"><a href="#cb2-83"></a>  route_ice    &lt;-<span class="st"> </span><span class="kw">Glacier_Disch</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">inputData =</span> <span class="kw">cbind</span>(ice_swe, ice_disch),</span>
+<span id="cb2-84"><a href="#cb2-84"></a>                                <span class="dt">initCond =</span> init_route_ice, <span class="dt">param =</span> param_route_ice  )</span>
+<span id="cb2-85"><a href="#cb2-85"></a></span>
+<span id="cb2-86"><a href="#cb2-86"></a>  <span class="co"># transfer function</span></span>
+<span id="cb2-87"><a href="#cb2-87"></a>  tf_soil &lt;-<span class="st"> </span><span class="kw">round</span>(</span>
+<span id="cb2-88"><a href="#cb2-88"></a>    <span class="kw">UH</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">Qg =</span> route_module[ , <span class="dv">1</span>], <span class="dt">param =</span> param_tf), <span class="dv">4</span>  )</span>
+<span id="cb2-89"><a href="#cb2-89"></a></span>
+<span id="cb2-90"><a href="#cb2-90"></a>  tf_ice  &lt;-<span class="st"> </span><span class="kw">round</span>(</span>
+<span id="cb2-91"><a href="#cb2-91"></a>    <span class="kw">UH</span>(<span class="dt">model =</span> <span class="dv">1</span>, <span class="dt">Qg =</span> route_ice[ , <span class="dv">1</span>], <span class="dt">param =</span> param_tf), <span class="dv">4</span>  )</span>
+<span id="cb2-92"><a href="#cb2-92"></a></span>
+<span id="cb2-93"><a href="#cb2-93"></a>  tf_out  &lt;-<span class="st"> </span>tf_soil <span class="op">+</span><span class="st"> </span>tf_ice</span>
+<span id="cb2-94"><a href="#cb2-94"></a></span>
+<span id="cb2-95"><a href="#cb2-95"></a>  <span class="kw">return</span>( <span class="kw">cbind</span>(<span class="dt">total =</span> tf_out, <span class="dt">soil =</span> tf_soil, <span class="dt">glacier =</span> tf_ice) )</span>
+<span id="cb2-96"><a href="#cb2-96"></a></span>
+<span id="cb2-97"><a href="#cb2-97"></a></span>
+<span id="cb2-98"><a href="#cb2-98"></a>}<span class="co"># end fun</span></span></code></pre></div>
+<p>Now, maybe is time to revisit the <strong>Semi-distributed hydrological model</strong> vignette (<em>Calibrating the parameters</em> section).</p>
+<p><strong>Your turn</strong></p>
+<p>I will give the correct parameters to all modules except for glacier related routines,</p>
+<ul>
+<li><code>param_snow = c(1.1, 0, 0, 2.5)</code></li>
+<li><code>param_soil = c(150, 0.90, 1.5)</code></li>
+<li><code>param_route = c(0.09, 0.07, 0.05, 5, 2)</code></li>
+<li><code>param_tf = c(3.00)</code></li>
+</ul>
+<p><strong>Hint</strong>: in the <code>param_ice()</code> argument, I will use the snow parameters except for the melt temperature and for the ice-melt factor.</p>
+<ul>
+<li>calibrate the glacier’s related parameters.</li>
+<li>is the glacier melt temperature parameter higher or lower than the one for the snow? Why?</li>
+<li>make a sesitivity (looking at the streamflow discharge) analysis over the calibrated parameters, which are the most sensitive?</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

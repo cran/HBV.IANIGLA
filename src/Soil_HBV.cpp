@@ -1,16 +1,17 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//#########################################################################
-// MODELO DE SUELO DEL HBV
-//#########################################################################
+// **********************************************************
+//  Author       : Ezequiel Toum
+//  Licence      : GPL V3
+//  Institution  : IANIGLA-CONICET
+//  e-mail       : etoum@mendoza-conicet.gob.ar
+//  **********************************************************
+//  HBV.IANIGLA package is distributed in the hope that it
+//  will be useful but WITHOUT ANY WARRANTY.
+//  **********************************************************
 
-//#########################################################################
-// Autor       : Ezequiel Toum
-// Licencia    : GPL V3
-// Institución : IANIGLA-CONICET
-// e-mail      : etoum@mendoza-conicet.gob.ar
-//#########################################################################
+/*
 
 //NOTA 1: este es un modelo que sirve para simular abstracciones, condiciones antecedentes de humedad,
 // pérdidas por evaporación o evapotranspiración y calcular flujo de agua que entra a los reservorios.
@@ -57,10 +58,150 @@ using namespace Rcpp;
 
 //TENER EN CTA QUE LOS INDICES EMPIEZAN EN CERO!!!!!!!
 //LOS CEROS PARA DOUBLES VAN COMO 0.0!!!!
+*/
 
-
+//' @name Soil_HBV
+//'
+//' @title Empirical soil moisture routine
+//'
+//' @description This module allows you to account for actual evapotranspiration,
+//' abstractions, antecedent conditions and effective runoff. The formulation enables
+//' non linear relationships between soil box water input (rainfall plus snowmelt) and
+//' the effective runoff. This effective value is the input series to the routine function
+//' (\code{\link{Routing_HBV}}).
+//'
+//' @usage Soil_HBV(
+//'        model,
+//'        inputData,
+//'        initCond,
+//'        param
+//'        )
+//'
+//' @param model numeric integer suggesting one of the following options:
+//' \itemize{
+//'   \item 1: Classical HBV soil moisture routine.
+//'   \item 2: HBV soil moisture routine with varying area. This option should
+//'   be used with \code{\link{SnowGlacier_HBV}}'s \strong{\emph{model 3}}.
+//' }
+//'
+//' @param inputData numeric matrix with the following series
+//'
+//' \strong{Model 1}
+//' \itemize{
+//'   \item \code{column_1}: \code{Total = Prain + Msnow} \eqn{[mm/\Delta t]}. This
+//'   series comes from the output of the \code{\link{SnowGlacier_HBV}} module.
+//'   \item \code{column_2}: potential evapotranspiration  \eqn{[mm/\Delta t]}. Since
+//'   the package has a simple model (\code{\link{PET}}) to obtain this
+//'   series I strongly recommend using the
+//'   \href{https://CRAN.R-project.org/package=Evapotranspiration}{\code{Evapotranspiration}}
+//'   package.
+//' }
+//'
+//' \strong{Model 2}
+//' \itemize{
+//'   \item \code{column_1}: as in \strong{model 1}.
+//'   \item \code{column_2}: as in \strong{model 1}.
+//'   \item \code{column_3} : relative soil area (ratio of soil surface over
+//'   basin area). When the glacier area changes the soil does the same, so coherence
+//'   between this two series should be seek.This value is used to scale the effective
+//'   runoff accordingly (\code{Rech} column in the matrix output).
+//' }
+//'
+//' @param initCond numeric vector with the following values:
+//'  \enumerate{
+//'   \item initial soil water content \eqn{[mm]}. This is a model state variable
+//'   and is internally used as first soil moisture value.
+//'   \item relative area \eqn{[-]}. Only needed when using \strong{\code{model 1}}.
+//'   This is the soil surface proportion relative to the catchment as a whole, so
+//'   the values should never supersede one (1). This value is used to scale the effective
+//'   runoff accordingly (\code{Rech} column in the matrix output).
+//'}
+//'
+//' @param param numeric vector with the following values:
+//' \enumerate{
+//'   \item \code{FC}: fictitious soil field capacity \eqn{[mm]}.
+//'   \item \code{LP}: parameter to get actual ET \eqn{[-]}.
+//'   \item \eqn{\beta}: exponential value that allows for non-linear relations between
+//'   soil box water input (rainfall plus snowmelt) and the effective runoff \eqn{[-]}.
+//' }
+//'
+//' @return Numeric matrix with the following columns:
+//' \enumerate{
+//'   \item \code{Rech}: recharge series \eqn{[mm/\Delta t]}. This is the input to
+//'   the \code{\link{Routing_HBV}} module.
+//'   \item \code{Eact}: actual evapotranspiration series \eqn{[mm/\Delta t]}.
+//'   \item \code{SM}: soil moisture series \eqn{[mm/\Delta t]}.
+//' }
+//'
+//' @references
+//' Bergström, S., Lindström, G., 2015. Interpretation of runoff processes in hydrological
+//' modelling—experience from the HBV approach. Hydrol. Process. 29, 3535–3545.
+//' https://doi.org/10.1002/hyp.10510
+//'
+//' @examples
+//' # The following is a toy example. I strongly recommend to see
+//' # the package vignettes in order to improve your skills on HBV.IANIGLA
+//'
+//' # HBV soil routine with variable area
+//' ## Calder's model
+//' potEvap <- PET(model = 1, hemis = 1, inputData = as.matrix(1:315), elev = c(1000, 1500),
+//'               param = c(4, 0.5))
+//'
+//' ## Debris-covered ice
+//'  ObsTemp   <- sin(x = seq(0, 10*pi, 0.1))
+//'  ObsPrecip <- runif(n = 315, max = 50, min = 0)
+//'  ObsGCA    <- seq(1, 0.8, -0.2/314)
+//'
+//' ## Fine debris covered layer assumed. Note that the ice-melt factor is cumpulsory but harmless.
+//' DebrisCovGlac <- SnowGlacier_HBV(model = 3, inputData = cbind(ObsTemp, ObsPrecip, ObsGCA),
+//'                                  initCond = c(10, 3, 1), param = c(1, 1, 0, 3, 1, 6))
+//'
+//' ## Soil routine
+//' ObsSoCA     <- 1 - ObsGCA
+//' inputMatrix <- cbind(DebrisCovGlac[ , 9], potEvap, ObsSoCA)
+//'
+//' soil <- Soil_HBV(model = 2, inputData = inputMatrix, initCond = c(50), param = c(200, 0.5, 2))
+//'
+//' @export
+//'
+//'
 // [[Rcpp::export]]
-NumericVector Soil_HBV(int model, NumericMatrix inputData, NumericVector initCond, NumericVector param) {
+NumericVector Soil_HBV(int model,
+                       NumericMatrix inputData,
+                       NumericVector initCond,
+                       NumericVector param) {
+  // *********************
+  //  conditionals
+  // *********************
+
+  // check for NA_real_
+  // inputData
+  int chk_1 = sum( is_na(inputData) );
+  if(chk_1 != 0){
+
+    stop("inputData argument should not contain NA values!");
+
+  }
+
+  // initCond
+  int chk_2 = sum( is_na(initCond) );
+  if(chk_2 != 0){
+
+    stop("initCond argument should not contain NA values!");
+
+  }
+
+  // param
+  int chk_3 = sum( is_na(param) );
+  if(chk_3 != 0){
+
+    stop("param argument should not contain NA values!");
+
+  }
+
+  // *********************
+  //  models
+  // *********************
 
   int n = inputData.nrow(); // número de filas
   int m = 3; //número de columnas

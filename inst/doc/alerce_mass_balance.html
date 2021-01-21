@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Ezequiel Toum" />
+
+<meta name="date" content="2021-01-21" />
+
+<title>Chapter 5: Simulating the Alerce glacier surface mass balance</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Chapter 5: Simulating the Alerce glacier surface mass balance</h1>
+<h4 class="author">Ezequiel Toum</h4>
+<h4 class="date">2021-01-21</h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In the previous chapters we deal with <em>ideal</em> or <em>synthetic</em> cases. This purely academic examples, were though as a gentle (and pedagogical) introduction to the <strong>HBV.IANIGLA</strong> package. In this chapter we are going to face our first real world case: the simulation of a glacier surface mass balance.</p>
+</div>
+<div id="glacier-surface-mass-balaces" class="section level2">
+<h2>Glacier surface mass balaces</h2>
+<p>The simulation of glacier mass balances is relevant in the Andes Cordillera, where these ice bodies have an important contribution to catchment discharge <span class="citation">(Pellicciotti et al. 2008; Ragettli and Pellicciotti 2012; La Frenierre and Mark 2014; Ayala et al. 2016, 2020; Masiokas et al. 2016)</span>.</p>
+<p>In mountain areas with scarce meteorological information, temperature index models are widely used to simulate snow and ice melting <span class="citation">(Hock 2003; Konz and Seibert 2010; Finger et al. 2015; Ayala et al. 2017; Bravo et al. 2017)</span>. Since air temperature is the most readily available meteorological data in remote areas, the temperature index approach has been widely used in glaciological and hydrological modeling <span class="citation">(Ohmura 2001)</span>. This package has been built with the <strong>SnowGlacier_HBV</strong> function, a module that uses this empirical approach to simulate snow, clean ice and debris covered melting.</p>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<p>In this section, we simulate the glacier mass balance for the Alerce glacier. Located on Monte Tronador (41.15º S ; 71.88º W), nearby the border between Argentina and Chile in the Andes of Northern Patagonia, Alerce is a medium size mountain glacier with an area of about 2.33 km<sup>2</sup> that ranges between 1629 and 2358 m elevation showing a SE aspect <span class="citation">(Ruiz et al. 2017; IANIGLA-ING 2018)</span>.</p>
+<p>Since 2013 it is part of the monitoring network of the <em>Inventario Nacional de Glaciares</em> <span class="citation">(IANIGLA-ING 2010)</span>. Measurements are carried out following the glaciological method for seasonal mass balance computation <span class="citation">(Kaser, Fountain, and Jansson 2003)</span>. Precipitation series from Puerto Montt (<em>Dirección General de Aguas, Chile</em>) and air temperature series from Bariloche (<em>Servicio Meteorológico Nacional - Argentina</em>) were used as meteorological forcing to simulate the annual glacier mass balance (<code>data(alerce_data)</code>).</p>
+<p>When calibrating the model parameters, we considered as acceptable simulations those showing an annual mass balance in the range of <em>MB ± 400 mm</em>, where <em>MB</em> is the glacier annual mass balance.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(HBV.IANIGLA)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">## loading the data-set</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">data</span>(alerce_data)</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a>  <span class="co"># now extract </span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>    meteo_data   &lt;-<span class="st"> </span>alerce_data<span class="op">$</span>meteo_data   <span class="co"># meteorological forcing series</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>    mass_balance &lt;-<span class="st"> </span>alerce_data<span class="op">$</span>mass_balance <span class="co"># annual glacier mass balances</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>    mb_dates     &lt;-<span class="st"> </span>alerce_data<span class="op">$</span>mb_dates     <span class="co"># fix seasonal dates</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>    gl_topo      &lt;-<span class="st"> </span>alerce_data<span class="op">$</span>topography   <span class="co"># elevation bands</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>    </span>
+<span id="cb1-12"><a href="#cb1-12"></a>    z_tair   &lt;-<span class="st"> </span>alerce_data<span class="op">$</span>station_height[<span class="dv">1</span>] <span class="co"># topographic elevation air temp.</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>    z_precip &lt;-<span class="st"> </span>alerce_data<span class="op">$</span>station_height[<span class="dv">2</span>] <span class="co"># topographic elevation of precipitation gauge </span></span>
+<span id="cb1-14"><a href="#cb1-14"></a>    </span></code></pre></div>
+<p>Despite the fact that we have a global surface mass balance estimation (derived from measurements), in order to take into consideration the topographic effect on it, we discretised our ice body in elevation bands. This mean that we have to build a semi-distributed glacier surface mass balance model.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># in this example we incorporate the precipitation and </span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># air temperature extrapolation functions into our model</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">## agruments description</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="co"># topograpphy: data frame with the elevation bands (gl_topo in this script).</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="co"># meteo: data frame with dates, air temperature and precipitation series.</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="co"># z_topo: numeric vector with air temperature and precipitation gauge elevation.</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="co"># param_tair: numeric vector with air temperature module parameters.</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>  <span class="co"># param_precip: numeric vector with precipitation module parameters.</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>  <span class="co"># param_ice: numeric vector with the glacier module parameters.</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  <span class="co"># init_ice: numeric value with initial snow water equivalent. Default value being 00 mm.</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">## output</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="co"># data frame with two columns: the date and the daily mass balance.</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a></span>
+<span id="cb2-15"><a href="#cb2-15"></a>glacier_hbv &lt;-<span class="st"> </span><span class="cf">function</span>(topography,</span>
+<span id="cb2-16"><a href="#cb2-16"></a>                        meteo,</span>
+<span id="cb2-17"><a href="#cb2-17"></a>                        z_topo,</span>
+<span id="cb2-18"><a href="#cb2-18"></a>                        param_tair,</span>
+<span id="cb2-19"><a href="#cb2-19"></a>                        param_precip,</span>
+<span id="cb2-20"><a href="#cb2-20"></a>                        param_ice,</span>
+<span id="cb2-21"><a href="#cb2-21"></a>                        <span class="dt">init_ice =</span> <span class="dv">0</span>){</span>
+<span id="cb2-22"><a href="#cb2-22"></a></span>
+<span id="cb2-23"><a href="#cb2-23"></a>  n_it    &lt;-<span class="st"> </span><span class="kw">nrow</span>(topography) <span class="co"># to get the number of elevation bands</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a>  n_dates &lt;-<span class="st"> </span><span class="kw">nrow</span>(meteo) <span class="co"># to get number of rows</span></span>
+<span id="cb2-25"><a href="#cb2-25"></a></span>
+<span id="cb2-26"><a href="#cb2-26"></a>  precip_model  &lt;-<span class="st"> </span>tair_model &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA_real_</span>, <span class="dt">nrow =</span> n_dates, <span class="dt">ncol =</span> n_it)</span>
+<span id="cb2-27"><a href="#cb2-27"></a>  glacier_model &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb2-28"><a href="#cb2-28"></a></span>
+<span id="cb2-29"><a href="#cb2-29"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_it){</span>
+<span id="cb2-30"><a href="#cb2-30"></a>    <span class="co"># we first distribute the meteo forcing among the elevation bands</span></span>
+<span id="cb2-31"><a href="#cb2-31"></a>    precip_model[ , i] &lt;-<span class="st"> </span><span class="kw">Precip_model</span>(<span class="dt">model =</span> <span class="dv">1</span>,</span>
+<span id="cb2-32"><a href="#cb2-32"></a>                                       <span class="dt">inputData =</span> meteo[ , <span class="st">&quot;P(mm/d)&quot;</span>],</span>
+<span id="cb2-33"><a href="#cb2-33"></a>                                       <span class="dt">zmeteo =</span> z_topo[<span class="dv">2</span>],</span>
+<span id="cb2-34"><a href="#cb2-34"></a>                                       <span class="dt">ztopo =</span> topography[i , <span class="st">&quot;mean&quot;</span>],</span>
+<span id="cb2-35"><a href="#cb2-35"></a>                                       <span class="dt">param =</span> param_precip)</span>
+<span id="cb2-36"><a href="#cb2-36"></a></span>
+<span id="cb2-37"><a href="#cb2-37"></a>    tair_model[ , i] &lt;-<span class="st"> </span><span class="kw">Temp_model</span>(<span class="dt">model =</span> <span class="dv">1</span>,</span>
+<span id="cb2-38"><a href="#cb2-38"></a>                                   <span class="dt">inputData =</span> meteo[ , <span class="st">&quot;Tair(ºC)&quot;</span>],</span>
+<span id="cb2-39"><a href="#cb2-39"></a>                                   <span class="dt">zmeteo =</span> z_topo[<span class="dv">1</span>],</span>
+<span id="cb2-40"><a href="#cb2-40"></a>                                   <span class="dt">ztopo =</span> topography[i , <span class="st">&quot;mean&quot;</span>],</span>
+<span id="cb2-41"><a href="#cb2-41"></a>                                   <span class="dt">param =</span> param_tair)</span>
+<span id="cb2-42"><a href="#cb2-42"></a></span>
+<span id="cb2-43"><a href="#cb2-43"></a>    <span class="co"># now we use the extrapolated values in the glacier module</span></span>
+<span id="cb2-44"><a href="#cb2-44"></a>    glacier_model[[ i ]] &lt;-</span>
+<span id="cb2-45"><a href="#cb2-45"></a><span class="st">      </span><span class="kw">SnowGlacier_HBV</span>(<span class="dt">model =</span> <span class="dv">1</span>,</span>
+<span id="cb2-46"><a href="#cb2-46"></a>                      <span class="dt">inputData =</span> <span class="kw">cbind</span>( tair_model[ , i], precip_model[ , i]),</span>
+<span id="cb2-47"><a href="#cb2-47"></a>                      <span class="dt">initCond =</span> <span class="kw">c</span>(init_ice, <span class="dv">1</span>, topography[i, <span class="st">&quot;area_rel&quot;</span>]),</span>
+<span id="cb2-48"><a href="#cb2-48"></a>                      <span class="dt">param =</span> param_ice )</span>
+<span id="cb2-49"><a href="#cb2-49"></a>  }</span>
+<span id="cb2-50"><a href="#cb2-50"></a></span>
+<span id="cb2-51"><a href="#cb2-51"></a>  <span class="co"># we aggregate the mass balance series for the whole glacier</span></span>
+<span id="cb2-52"><a href="#cb2-52"></a>  cum_mb &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span>n_it, <span class="dt">FUN =</span> <span class="cf">function</span>(x){</span>
+<span id="cb2-53"><a href="#cb2-53"></a>    out &lt;-<span class="st"> </span>glacier_model[[x]][ , <span class="dv">7</span>] <span class="op">*</span><span class="st"> </span>topography[x, <span class="st">&quot;area_rel&quot;</span>]</span>
+<span id="cb2-54"><a href="#cb2-54"></a>  })</span>
+<span id="cb2-55"><a href="#cb2-55"></a>  cum_mb &lt;-<span class="st"> </span><span class="kw">Reduce</span>(<span class="dt">f =</span> <span class="st">`</span><span class="dt">+</span><span class="st">`</span>, <span class="dt">x =</span> cum_mb)</span>
+<span id="cb2-56"><a href="#cb2-56"></a></span>
+<span id="cb2-57"><a href="#cb2-57"></a>  <span class="co"># return the column Cum = Psnow - Mtot (aggregated at glacier scale)</span></span>
+<span id="cb2-58"><a href="#cb2-58"></a>  cum_out &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">date =</span> meteo[ , <span class="st">&quot;Date&quot;</span>],</span>
+<span id="cb2-59"><a href="#cb2-59"></a>                        <span class="st">&quot;cum_mb(mm)&quot;</span> =<span class="st"> </span>cum_mb,</span>
+<span id="cb2-60"><a href="#cb2-60"></a>                        <span class="dt">check.names =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb2-61"><a href="#cb2-61"></a></span>
+<span id="cb2-62"><a href="#cb2-62"></a>  <span class="kw">return</span>(cum_out)</span>
+<span id="cb2-63"><a href="#cb2-63"></a>}</span></code></pre></div>
+<p>When the measures and simulations are at different time-scale (annual vs daily) is always useful to construct an aggregation function (apart from the model).</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># this function will use the glacier_hbv output data frame</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># in order to get the annual mass balance</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">## arguments</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="co"># x: data frame resulting from glacier_hbv model</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="co"># start_date: string vector with starting dates.</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="co"># end_date: string vector with ending dates.</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">## output</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>  <span class="co"># data frame with the annual mass balances</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a>agg_mb &lt;-<span class="st"> </span><span class="cf">function</span>(x, start_date, end_date){</span>
+<span id="cb3-12"><a href="#cb3-12"></a>  n_it &lt;-<span class="st"> </span><span class="kw">length</span>(start_date)</span>
+<span id="cb3-13"><a href="#cb3-13"></a></span>
+<span id="cb3-14"><a href="#cb3-14"></a>  annual_mb &lt;-<span class="st"> </span><span class="kw">c</span>()</span>
+<span id="cb3-15"><a href="#cb3-15"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_it){</span>
+<span id="cb3-16"><a href="#cb3-16"></a>    flag_start &lt;-<span class="st"> </span><span class="kw">which</span>(x[ , <span class="dv">1</span>] <span class="op">==</span><span class="st"> </span>start_date[i])</span>
+<span id="cb3-17"><a href="#cb3-17"></a>    flag_end   &lt;-<span class="st"> </span><span class="kw">which</span>(x[ , <span class="dv">1</span>] <span class="op">==</span><span class="st"> </span>end_date[i])</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a>    annual_mb[i] &lt;-<span class="st"> </span><span class="kw">sum</span>( x[flag_start<span class="op">:</span>flag_end, <span class="dv">2</span>] )</span>
+<span id="cb3-20"><a href="#cb3-20"></a></span>
+<span id="cb3-21"><a href="#cb3-21"></a>  }</span>
+<span id="cb3-22"><a href="#cb3-22"></a></span>
+<span id="cb3-23"><a href="#cb3-23"></a>  <span class="co"># build output data frame</span></span>
+<span id="cb3-24"><a href="#cb3-24"></a>  out &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">start =</span> start_date,</span>
+<span id="cb3-25"><a href="#cb3-25"></a>                    <span class="dt">end =</span> end_date,</span>
+<span id="cb3-26"><a href="#cb3-26"></a>                    <span class="st">&quot;mb(mm we)&quot;</span> =<span class="st"> </span>annual_mb,</span>
+<span id="cb3-27"><a href="#cb3-27"></a>                    <span class="dt">check.names =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb3-28"><a href="#cb3-28"></a></span>
+<span id="cb3-29"><a href="#cb3-29"></a>  <span class="kw">return</span>(out)</span>
+<span id="cb3-30"><a href="#cb3-30"></a></span>
+<span id="cb3-31"><a href="#cb3-31"></a>}</span>
+<span id="cb3-32"><a href="#cb3-32"></a></span>
+<span id="cb3-33"><a href="#cb3-33"></a><span class="co"># in this chunk of code I will also build the GOF function (you can also take a look </span></span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="co"># at the hydroGOF package)</span></span>
+<span id="cb3-35"><a href="#cb3-35"></a></span>
+<span id="cb3-36"><a href="#cb3-36"></a><span class="co">## arguments</span></span>
+<span id="cb3-37"><a href="#cb3-37"></a>  <span class="co"># obs_upp: numeric vector with the acceptable upper limit</span></span>
+<span id="cb3-38"><a href="#cb3-38"></a>  <span class="co"># obs_lwr: numeric vector with the acceptable lower limit</span></span>
+<span id="cb3-39"><a href="#cb3-39"></a>  <span class="co"># sim: numeric vector with simulated mass balance</span></span>
+<span id="cb3-40"><a href="#cb3-40"></a><span class="co">## output</span></span>
+<span id="cb3-41"><a href="#cb3-41"></a>  <span class="co"># numeric value with the number of times that the simulation fits in between </span></span>
+<span id="cb3-42"><a href="#cb3-42"></a>  <span class="co"># the lower and upper limits.</span></span>
+<span id="cb3-43"><a href="#cb3-43"></a></span>
+<span id="cb3-44"><a href="#cb3-44"></a></span>
+<span id="cb3-45"><a href="#cb3-45"></a>my_gof &lt;-<span class="st"> </span><span class="cf">function</span>(obs_upp, obs_lwr, sim){</span>
+<span id="cb3-46"><a href="#cb3-46"></a>  n_it &lt;-<span class="st"> </span><span class="kw">length</span>(sim)</span>
+<span id="cb3-47"><a href="#cb3-47"></a>  out  &lt;-<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb3-48"><a href="#cb3-48"></a></span>
+<span id="cb3-49"><a href="#cb3-49"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_it){</span>
+<span id="cb3-50"><a href="#cb3-50"></a></span>
+<span id="cb3-51"><a href="#cb3-51"></a>    <span class="cf">if</span>(sim[i] <span class="op">&gt;=</span><span class="st"> </span>obs_lwr[i] <span class="op">&amp;</span><span class="st"> </span>sim[i] <span class="op">&lt;=</span><span class="st"> </span>obs_upp[i]){</span>
+<span id="cb3-52"><a href="#cb3-52"></a>      out &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>out</span>
+<span id="cb3-53"><a href="#cb3-53"></a></span>
+<span id="cb3-54"><a href="#cb3-54"></a>    } <span class="cf">else</span> {</span>
+<span id="cb3-55"><a href="#cb3-55"></a>      out &lt;-<span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>out</span>
+<span id="cb3-56"><a href="#cb3-56"></a></span>
+<span id="cb3-57"><a href="#cb3-57"></a>    }</span>
+<span id="cb3-58"><a href="#cb3-58"></a></span>
+<span id="cb3-59"><a href="#cb3-59"></a>  }</span>
+<span id="cb3-60"><a href="#cb3-60"></a></span>
+<span id="cb3-61"><a href="#cb3-61"></a>  <span class="kw">return</span>(out)</span>
+<span id="cb3-62"><a href="#cb3-62"></a></span>
+<span id="cb3-63"><a href="#cb3-63"></a>}</span></code></pre></div>
+</div>
+<div id="calibrating-the-parameters" class="section level2">
+<h2>Calibrating the parameters</h2>
+<p>As in the previous chapters (3 and 4), we are going to sample the parameter space in order to get the acceptable parameter sets.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a> <span class="co"># air temperature model</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>tair_range &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">t_grad  =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">9.8</span>, <span class="dv">-2</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co"># precip model</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>precip_range &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>
+<span id="cb4-8"><a href="#cb4-8"></a>  <span class="dt">p_grad  =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">25</span>)</span>
+<span id="cb4-9"><a href="#cb4-9"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co"># glacier module</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>glacier_range &lt;-<span class="st"> </span><span class="kw">rbind</span>(</span>
+<span id="cb4-13"><a href="#cb4-13"></a>  <span class="dt">sfcf =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb4-14"><a href="#cb4-14"></a>  <span class="dt">tr   =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
+<span id="cb4-15"><a href="#cb4-15"></a>  <span class="dt">tt   =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
+<span id="cb4-16"><a href="#cb4-16"></a>  <span class="dt">fm   =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>),</span>
+<span id="cb4-17"><a href="#cb4-17"></a>  <span class="dt">fi   =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">8</span>)</span>
+<span id="cb4-18"><a href="#cb4-18"></a>)</span>
+<span id="cb4-19"><a href="#cb4-19"></a></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co">## we aggregate them in a matrix</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a>param_range &lt;-</span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="st">  </span><span class="kw">rbind</span>(</span>
+<span id="cb4-23"><a href="#cb4-23"></a>    tair_range,</span>
+<span id="cb4-24"><a href="#cb4-24"></a>    precip_range,</span>
+<span id="cb4-25"><a href="#cb4-25"></a>    glacier_range</span>
+<span id="cb4-26"><a href="#cb4-26"></a>  )</span></code></pre></div>
+<p>In the next step we generate the random parameter sets,</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># set the number of model runs that you want to try</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>n_run &lt;-<span class="st"> </span><span class="dv">10000</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># build the matrix</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>n_it &lt;-<span class="st"> </span><span class="kw">nrow</span>(param_range)</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a>param_sets &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA_real_</span>, <span class="dt">nrow =</span> n_run, <span class="dt">ncol =</span> n_it)</span>
+<span id="cb5-8"><a href="#cb5-8"></a></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="kw">colnames</span>(param_sets) &lt;-<span class="st"> </span><span class="kw">rownames</span>(param_range)</span>
+<span id="cb5-10"><a href="#cb5-10"></a></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="kw">set.seed</span>(<span class="dv">123</span>) <span class="co"># just for reproducibility </span></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_it){</span>
+<span id="cb5-13"><a href="#cb5-13"></a></span>
+<span id="cb5-14"><a href="#cb5-14"></a>  param_sets[ , i] &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dt">n =</span> n_run,</span>
+<span id="cb5-15"><a href="#cb5-15"></a>                            <span class="dt">min =</span> param_range[i, <span class="dv">1</span>],</span>
+<span id="cb5-16"><a href="#cb5-16"></a>                            <span class="dt">max =</span> param_range[i, <span class="dv">2</span>]</span>
+<span id="cb5-17"><a href="#cb5-17"></a>  )</span>
+<span id="cb5-18"><a href="#cb5-18"></a></span>
+<span id="cb5-19"><a href="#cb5-19"></a>}</span>
+<span id="cb5-20"><a href="#cb5-20"></a></span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="kw">head</span>(param_sets)</span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#&gt;         t_grad    p_grad     sfcf        tr        tt       fm       fi</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="co">#&gt; [1,] -7.556895 11.211834 1.991123 0.2636769 0.6044820 1.639739 5.692968</span></span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="co">#&gt; [2,] -3.651220 11.490401 1.302231 2.3388344 2.9345710 2.331002 7.141930</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="co">#&gt; [3,] -6.609980 22.405084 1.433759 0.8435020 1.2381374 1.384493 6.407414</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="co">#&gt; [4,] -2.912464 11.573476 1.160521 1.6490971 1.4259374 2.434075 4.327736</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a><span class="co">#&gt; [5,] -2.464355  7.514025 1.823027 0.5838206 0.0531312 3.157230 5.180723</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="co">#&gt; [6,] -9.444659 12.124429 1.208091 1.0183195 1.1042341 3.717423 5.354845</span></span></code></pre></div>
+<p>Now we combine our functions and extract our best simulations,</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># goodness of fit vector</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>gof &lt;-<span class="st"> </span><span class="kw">c</span>()</span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># make a loop</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_run){</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a>  <span class="co"># run the model</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>  glacier_sim &lt;-<span class="st"> </span><span class="kw">glacier_hbv</span>(<span class="dt">topography =</span> gl_topo,</span>
+<span id="cb6-9"><a href="#cb6-9"></a>                             <span class="dt">meteo =</span> meteo_data,</span>
+<span id="cb6-10"><a href="#cb6-10"></a>                             <span class="dt">z_topo =</span> <span class="kw">c</span>(z_tair, z_precip),</span>
+<span id="cb6-11"><a href="#cb6-11"></a>                             <span class="dt">param_tair =</span> param_sets[i, <span class="kw">rownames</span>(tair_range)],</span>
+<span id="cb6-12"><a href="#cb6-12"></a>                             <span class="dt">param_precip =</span> param_sets[i, <span class="kw">rownames</span>(precip_range) ],</span>
+<span id="cb6-13"><a href="#cb6-13"></a>                             <span class="dt">param_ice =</span> param_sets[i, <span class="kw">rownames</span>(glacier_range)] )</span>
+<span id="cb6-14"><a href="#cb6-14"></a></span>
+<span id="cb6-15"><a href="#cb6-15"></a>  <span class="co"># aggregate the simulation</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a>  annual_mb &lt;-<span class="st"> </span><span class="kw">agg_mb</span>(<span class="dt">x =</span> glacier_sim,</span>
+<span id="cb6-17"><a href="#cb6-17"></a>                      <span class="dt">start_date =</span> <span class="kw">as.Date</span>( mb_dates<span class="op">$</span>winter[<span class="op">-</span><span class="dv">4</span>] ),</span>
+<span id="cb6-18"><a href="#cb6-18"></a>                      <span class="dt">end_date =</span> <span class="kw">as.Date</span>( mb_dates<span class="op">$</span>winter[<span class="op">-</span><span class="dv">1</span>] ) <span class="op">-</span><span class="st"> </span><span class="dv">1</span> )</span>
+<span id="cb6-19"><a href="#cb6-19"></a></span>
+<span id="cb6-20"><a href="#cb6-20"></a>  <span class="co"># compare the simulations with measurements</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a>  gof[i] &lt;-<span class="st"> </span><span class="kw">my_gof</span>(<span class="dt">obs_upp =</span> mass_balance<span class="op">$</span>upp,</span>
+<span id="cb6-22"><a href="#cb6-22"></a>                   <span class="dt">obs_lwr =</span> mass_balance<span class="op">$</span>lwr,</span>
+<span id="cb6-23"><a href="#cb6-23"></a>                   <span class="dt">sim =</span> annual_mb[ , <span class="dv">3</span>])</span>
+<span id="cb6-24"><a href="#cb6-24"></a></span>
+<span id="cb6-25"><a href="#cb6-25"></a>  <span class="kw">rm</span>(glacier_sim, annual_mb)</span>
+<span id="cb6-26"><a href="#cb6-26"></a>}</span>
+<span id="cb6-27"><a href="#cb6-27"></a></span>
+<span id="cb6-28"><a href="#cb6-28"></a>param_sets &lt;-<span class="st"> </span><span class="kw">cbind</span>(param_sets, gof)</span>
+<span id="cb6-29"><a href="#cb6-29"></a></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="co"># we apply a filter</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a>param_subset &lt;-<span class="st"> </span><span class="kw">subset</span>(<span class="dt">x =</span> param_sets, <span class="dt">subset =</span> gof <span class="op">==</span><span class="st"> </span><span class="dv">3</span>)</span></code></pre></div>
+<p>Once we have the subsetted our parameter matrix, we run the simulations to obtain a mean value (one per year).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># now we run the model again to get our simulations</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>n_it &lt;-<span class="st"> </span><span class="kw">nrow</span>(param_subset)</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>mb_sim &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA_real_</span>, <span class="dt">nrow =</span> <span class="dv">3</span>, <span class="dt">ncol =</span> n_it)</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_it){</span>
+<span id="cb7-7"><a href="#cb7-7"></a>  glacier_sim &lt;-<span class="st"> </span><span class="kw">glacier_hbv</span>(<span class="dt">topography =</span> gl_topo,</span>
+<span id="cb7-8"><a href="#cb7-8"></a>                             <span class="dt">meteo =</span> meteo_data,</span>
+<span id="cb7-9"><a href="#cb7-9"></a>                             <span class="dt">z_topo =</span> <span class="kw">c</span>(z_tair, z_precip),</span>
+<span id="cb7-10"><a href="#cb7-10"></a>                             <span class="dt">param_tair =</span> param_subset[i, <span class="kw">rownames</span>(tair_range)],</span>
+<span id="cb7-11"><a href="#cb7-11"></a>                             <span class="dt">param_precip =</span> param_subset[i, <span class="kw">rownames</span>(precip_range) ],</span>
+<span id="cb7-12"><a href="#cb7-12"></a>                             <span class="dt">param_ice =</span> param_subset[i, <span class="kw">rownames</span>(glacier_range)] )</span>
+<span id="cb7-13"><a href="#cb7-13"></a></span>
+<span id="cb7-14"><a href="#cb7-14"></a>  annual_mb &lt;-<span class="st"> </span><span class="kw">agg_mb</span>(<span class="dt">x =</span> glacier_sim,</span>
+<span id="cb7-15"><a href="#cb7-15"></a>                      <span class="dt">start_date =</span> <span class="kw">as.Date</span>( mb_dates<span class="op">$</span>winter[<span class="op">-</span><span class="dv">4</span>] ),</span>
+<span id="cb7-16"><a href="#cb7-16"></a>                      <span class="dt">end_date =</span> <span class="kw">as.Date</span>( mb_dates<span class="op">$</span>winter[<span class="op">-</span><span class="dv">1</span>] ) <span class="op">-</span><span class="st"> </span><span class="dv">1</span> )</span>
+<span id="cb7-17"><a href="#cb7-17"></a></span>
+<span id="cb7-18"><a href="#cb7-18"></a>  mb_sim[ , i] &lt;-<span class="st"> </span>annual_mb[ , <span class="dv">3</span>]</span>
+<span id="cb7-19"><a href="#cb7-19"></a></span>
+<span id="cb7-20"><a href="#cb7-20"></a>  <span class="kw">rm</span>(i, glacier_sim, annual_mb)</span>
+<span id="cb7-21"><a href="#cb7-21"></a></span>
+<span id="cb7-22"><a href="#cb7-22"></a>}</span>
+<span id="cb7-23"><a href="#cb7-23"></a></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="co"># now we are going to make a data frame with the mean surface mass balance simulation</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a>mean_sim &lt;-<span class="st"> </span><span class="kw">cbind</span>( mass_balance,</span>
+<span id="cb7-26"><a href="#cb7-26"></a>                   <span class="st">&quot;mb_sim&quot;</span> =<span class="st">  </span><span class="kw">rowMeans</span>(mb_sim)    )</span>
+<span id="cb7-27"><a href="#cb7-27"></a></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="co"># make the plot</span></span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb7-30"><a href="#cb7-30"></a>g1 &lt;-</span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">data =</span>  mean_sim, <span class="kw">aes</span>(<span class="dt">x =</span> year)) <span class="op">+</span></span>
+<span id="cb7-32"><a href="#cb7-32"></a><span class="st">  </span><span class="kw">geom_pointrange</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="st">`</span><span class="dt">mb(mm we)</span><span class="st">`</span>, <span class="dt">ymin =</span> <span class="st">`</span><span class="dt">lwr</span><span class="st">`</span>, <span class="dt">color =</span> <span class="st">&#39;obs&#39;</span>,</span>
+<span id="cb7-33"><a href="#cb7-33"></a>                      <span class="dt">ymax =</span> <span class="st">`</span><span class="dt">upp</span><span class="st">`</span> ), <span class="dt">size =</span> <span class="dv">1</span>,  <span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">shape =</span> <span class="dv">21</span>) <span class="op">+</span></span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="st">`</span><span class="dt">mb_sim</span><span class="st">`</span>, <span class="dt">fill =</span> <span class="st">&#39;sim&#39;</span>), <span class="dt">shape =</span> <span class="dv">23</span>,</span>
+<span id="cb7-35"><a href="#cb7-35"></a>             <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
+<span id="cb7-36"><a href="#cb7-36"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb7-37"><a href="#cb7-37"></a><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1500</span>, <span class="dv">500</span>), <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">1500</span>, <span class="dv">500</span>, <span class="dv">250</span>) ) <span class="op">+</span></span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">name =</span> <span class="st">&#39;&#39;</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&#39;obs&#39;</span> =<span class="st"> &#39;blue&#39;</span>) ) <span class="op">+</span></span>
+<span id="cb7-39"><a href="#cb7-39"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">name =</span> <span class="st">&#39;&#39;</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&#39;sim&#39;</span> =<span class="st"> &#39;red&#39;</span>) ) <span class="op">+</span></span>
+<span id="cb7-40"><a href="#cb7-40"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;&#39;</span>) <span class="op">+</span></span>
+<span id="cb7-41"><a href="#cb7-41"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&#39;mb (mm we)&#39;</span>) <span class="op">+</span></span>
+<span id="cb7-42"><a href="#cb7-42"></a><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span></span>
+<span id="cb7-43"><a href="#cb7-43"></a><span class="st">  </span><span class="kw">theme</span>(</span>
+<span id="cb7-44"><a href="#cb7-44"></a>    <span class="dt">title =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">size =</span> <span class="dv">12</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb7-45"><a href="#cb7-45"></a>    <span class="dt">axis.title.x =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">size =</span> <span class="dv">12</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb7-46"><a href="#cb7-46"></a>    <span class="dt">axis.title.y =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">size =</span> <span class="dv">12</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb7-47"><a href="#cb7-47"></a>    <span class="dt">legend.text =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">11</span>),</span>
+<span id="cb7-48"><a href="#cb7-48"></a>    <span class="dt">axis.text =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">11</span>))</span>
+<span id="cb7-49"><a href="#cb7-49"></a></span>
+<span id="cb7-50"><a href="#cb7-50"></a>g1</span></code></pre></div>
+<p><strong>Is your turn</strong></p>
+<ul>
+<li>Can you do the job without looking at the vignette?</li>
+<li>If you have your own data, maybe is a good time to apply <strong>HBV.IANIGLA</strong> on them.</li>
+</ul>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-ayala:2016">
+<p>Ayala, A., F. Pellicciotti, S. MacDonell, J. McPhee, S. Vivero, C. Campos, and P. Egli. 2016. “Modelling the Hydrological Response of Debris-Free and Debris-Covered Glaciers to Present Climatic Conditions in the Semiarid Andes of Central Chile.” <em>Hydrol. Process.</em> 30 (22): 4036–58. <a href="https://doi.org/10.1002/hyp.10971">https://doi.org/10.1002/hyp.10971</a>.</p>
+</div>
+<div id="ref-ayala:2017">
+<p>Ayala, A., F. Pellicciotti, N. Peleg, and P. Burlando. 2017. “Melt and Surface Sublimation Across a Glacier in a Dry Environment: Distributed Energy-Balance Modelling of Juncal Norte Glacier, Chile.” <em>Journal of Glaciology</em> 63 (241): 803–22. <a href="https://doi.org/10.1017/jog.2017.46">https://doi.org/10.1017/jog.2017.46</a>.</p>
+</div>
+<div id="ref-ayala:2020">
+<p>Ayala, Álvaro, David Farías-Barahona, Matthias Huss, Francesca Pellicciotti, James McPhee, and Daniel Farinotti. 2020. “Glacier Runoff Variations Since 1955 in the Maipo River Basin, in the Semiarid Andes of Central Chile.” <em>The Cryosphere</em> 14 (6): 2005–27. <a href="https://doi.org/https://doi.org/10.5194/tc-14-2005-2020">https://doi.org/https://doi.org/10.5194/tc-14-2005-2020</a>.</p>
+</div>
+<div id="ref-bravo:2017">
+<p>Bravo, Claudio, Thomas Loriaux, Andrés Rivera, and Ben W. Brock. 2017. “Assessing Glacier Melt Contribution to Streamflow at Universidad Glacier, Central Andes of Chile.” <em>Hydrology and Earth System Sciences</em> 21 (7): 3249–66. <a href="https://doi.org/https://doi.org/10.5194/hess-21-3249-2017">https://doi.org/https://doi.org/10.5194/hess-21-3249-2017</a>.</p>
+</div>
+<div id="ref-finger:2015">
+<p>Finger, David, Marc Vis, Matthias Huss, and Jan Seibert. 2015. “The Value of Multiple Data Set Calibration Versus Model Complexity for Improving the Performance of Hydrological Models in Mountain Catchments.” <em>Water Resour. Res.</em> 51 (4): 1939–58. <a href="https://doi.org/10.1002/2014WR015712">https://doi.org/10.1002/2014WR015712</a>.</p>
+</div>
+<div id="ref-hock:2003">
+<p>Hock, Regine. 2003. “Temperature Index Melt Modelling in Mountain Areas.” <em>Journal of Hydrology</em> 282 (1): 104–15. <a href="https://doi.org/10.1016/S0022-1694(03)00257-9">https://doi.org/10.1016/S0022-1694(03)00257-9</a>.</p>
+</div>
+<div id="ref-ing_fundamentos:2010">
+<p>IANIGLA-ING. 2010. “Inventario Nacional de Glaciares Y Ambiente Periglacial:Fundamentos Y Cronograma de Ejecución.” Mendoza: CONICET. <a href="http://www.glaciaresargentinos.gob.ar/wp-content/uploads/legales/fundamentos_cronograma_ejecucion.pdf">http://www.glaciaresargentinos.gob.ar/wp-content/uploads/legales/fundamentos_cronograma_ejecucion.pdf</a>.</p>
+</div>
+<div id="ref-ing_manso:2018">
+<p>———. 2018. “IANIGLA-Inventario Nacional de Glaciares. 2018. Informe de Las Subcuencas de Los Ríos Manso, Villegas Y Foyel. Cuenca de Los Ríos Manso Y Puelo. IANIGLA-CONICET, Ministerio de Ambiente Y Desarrollo Sustentable de La Nación.” IANIGLA. <a href="http://www.glaciaresargentinos.gob.ar">http://www.glaciaresargentinos.gob.ar</a>.</p>
+</div>
+<div id="ref-kaser_manual:2003">
+<p>Kaser, George, Andrew Fountain, and Peter Jansson. 2003. “A Manual for Monitoring the Mass Balance of Mountain Glaciers.” Manual 59. Paris: UNESCO.</p>
+</div>
+<div id="ref-konz:2010">
+<p>Konz, Markus, and Jan Seibert. 2010. “On the Value of Glacier Mass Balances for Hydrological Model Calibration.” <em>Journal of Hydrology</em> 385 (1): 238–46. <a href="https://doi.org/10.1016/j.jhydrol.2010.02.025">https://doi.org/10.1016/j.jhydrol.2010.02.025</a>.</p>
+</div>
+<div id="ref-frenierre:2014">
+<p>La Frenierre, Jeff, and Bryan G. Mark. 2014. “A Review of Methods for Estimating the Contribution of Glacial Meltwater to Total Watershed Discharge.” <em>Progress in Physical Geography: Earth and Environment</em> 38 (2): 173–200. <a href="https://doi.org/10.1177/0309133313516161">https://doi.org/10.1177/0309133313516161</a>.</p>
+</div>
+<div id="ref-masiokas:2016">
+<p>Masiokas, M. H., D. A. Christie, C. Le Quesne, P. Pitte, L. Ruiz, R. Villalba, B. H. Luckman, et al. 2016. “Reconstructing the Annual Mass Balance of the Echaurren Norte Glacier (Central Andes, <span class="math inline">\(33.5^{\circ}\)</span> S) Using Local and Regional Hydroclimatic Data.” <em>The Cryosphere</em> 10 (April): 927–40. <a href="https://doi.org/10.5194/tc-10-927-2016">https://doi.org/10.5194/tc-10-927-2016</a>.</p>
+</div>
+<div id="ref-ohmura:2001">
+<p>Ohmura, Atsumu. 2001. “Physical Basis for the Temperature-Based Melt-Index Method.” <em>Journal of Applied Meteorology</em> 40 (4): 753–61. <a href="https://doi.org/10.1175/1520-0450(2001)040%3C0753:PBFTTB%3E2.0.CO;2">https://doi.org/10.1175/1520-0450(2001)040&lt;0753:PBFTTB&gt;2.0.CO;2</a>.</p>
+</div>
+<div id="ref-pellicciotti:2008">
+<p>Pellicciotti, Francesca, Jakob Helbing, Andrés Rivera, Vincent Favier, Javier Corripio, Jose Araos, Jean-Emmanuel Sicart, and Marco Carenzo. 2008. “A Study of the Energy Balance and Melt Regime on Juncal Norte Glacier, Semi-Arid Andes of Central Chile, Using Melt Models of Different Complexity.” <em>Hydrol. Process.</em> 22 (19): 3980–97. <a href="https://doi.org/10.1002/hyp.7085">https://doi.org/10.1002/hyp.7085</a>.</p>
+</div>
+<div id="ref-ragettli:2012">
+<p>Ragettli, S., and F. Pellicciotti. 2012. “Calibration of a Physically Based, Spatially Distributed Hydrological Model in a Glacierized Basin: On the Use of Knowledge from Glaciometeorological Processes to Constrain Model Parameters.” <em>Water Resour. Res.</em> 48 (3): W03509. <a href="https://doi.org/10.1029/2011WR010559">https://doi.org/10.1029/2011WR010559</a>.</p>
+</div>
+<div id="ref-ruiz:2017">
+<p>Ruiz, L., E. Berthier, M. Viale, P. Pitte, and M. H. Masiokas. 2017. “Recent Geodetic Mass Balance of Monte Tronador Glaciers, Northern Patagonian Andes.” <em>The Cryosphere</em> 11 (1): 619–34. <a href="https://doi.org/10.5194/tc-11-619-2017">https://doi.org/10.5194/tc-11-619-2017</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

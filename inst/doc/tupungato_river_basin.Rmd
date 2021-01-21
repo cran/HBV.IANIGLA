@@ -1,0 +1,33 @@
+---
+title: "Chapter 6: Simulating the Tupungato River basin streamflow discharge"
+output: rmarkdown::html_vignette
+author: "Ezequiel Toum"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Chapter 6: Simulating the Tupungato River basin streamflow discharge}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Is your turn!
+
+In this chapter you are by your own. In the `data("tupungato_data")` dataset you will find 
+a minimal information content to simulate the streamflow discharge of the Tupungato River basin (`?tupungato_data`). 
+
+**Hint**:
+ 
+ * maybe is time time take a look at the [Evapotranspiration](https://CRAN.R-project.org/package=Evapotranspiration) 
+ package. Remember that in this case example (Tupungato basin) you only have air temperature series.
+ * in the dataset you will find series of snow cover area. Are they useful? how? [see @parajka_value_2008; @finger:2015].
+ * to construct the HBV model it would be wise to revisit vignette's chapter 3. 
+ 
+## References
+ 

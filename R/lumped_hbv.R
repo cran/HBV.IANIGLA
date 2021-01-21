@@ -1,0 +1,17 @@
+#' Lumped HBV catchment data
+#'
+#' Here you will find what I consider the starting point dataset to begin the modeling with
+#' HBV.IANIGLA. This data is for modeling the streamflow of a synthetic basin
+#' with a perfect fit. For running the model you will have to connect the different
+#' package's modules (or functions) in order to get what I consider
+#' the most simple hydrological model.
+#'
+#' @format A data frame containing:
+#' \describe{
+#'   \item{Date}{date series.}
+#'   \item{T(ºC)}{air temperature series.}
+#'   \item{P(mm/d)}{total ammount of precipitation per day.}
+#'   \item{PET(mm/d)}{potential evapotranspiration series.}
+#'   \item{qout(mm/d)}{specific basin discharge. This are the values that you have to reproduce.}
+#'}
+"lumped_hbv"

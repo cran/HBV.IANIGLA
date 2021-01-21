@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Ezequiel Toum" />
+
+<meta name="date" content="2021-01-21" />
+
+<title>Chapter 1: HBV.IANIGLA overview</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Chapter 1: HBV.IANIGLA overview</h1>
+<h4 class="author">Ezequiel Toum</h4>
+<h4 class="date">2021-01-21</h4>
+
+
+
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>Hydrological modeling is widely used by engineers, meteorologists, geographers, geologists and researchers interested in knowing, for example, the river runoff in the next few days, what will happen with the snowpack given certain changes in temperature or precipitation, among many other hydrological processes.</p>
+<p>In the Andes of Argentina, water is an essential resource for crop irrigation, industrial and human water supply, hydropower generation and for the environmental balance. The important role of mountain watersheds and its relative high sensitivity to climate change (e.g.: in precipitation amounts) highlights the need of shedding light (unless) in some issues <span class="citation">(Viviroli et al. 2011)</span>:</p>
+<ul>
+<li>clearly understand the role of glaciers and snow in water supply at catchment scale.</li>
+<li>make an approach to the surface hydrologic mass balance.</li>
+<li>be able to make water supply forecasting.</li>
+<li>make daily streamflow forecasting.</li>
+</ul>
+<p>Despite the fact that Argentina has a mountain range of more than 3000 km long and large populations depending on the water generated along the Andes, there are just a few scientific studies focus on the Andes hydro-climatology. Among these studies, the works using hydrological modeling tools are scarce and none of them incorporate glaciers in the hydrological cycle (see <span class="citation">Masiokas et al. (2020)</span> for a review).</p>
+<p>The <strong>HBV.IANIGLA</strong> was developed to solve hydroclimatic modeling problems in the Andes of Argentina, a mountain range with unique characteristics where other open access versions of the HBV (e.g.: HBV-Light, TUWmodel) are difficult to apply. As limitations of the previous versions we can mention the lack of a glacier module (TUWmodel), the limited number of elevation bands (HBV-light) and the impossibility to incorporate new modules, among others. The package was design with a modular approach and offers the possibility of applying it using diverse spatio-temporal scales with dissimilar objectives in the same environment (e.g.: real time streamflow forecasting, teaching hydrological models or simulating the surface mass balance of glaciers). It also offers the chance of combining the modules with other R-related hydrological packages (e.g.: Evapotranspiration, DEoptim, topmodel, hydromad) or with functions required by the user <span class="citation">(Guo, Westra, and Peterson 2019; Ardia et al. 2016; Buytaert 2018)</span>.</p>
+</div>
+<div id="model-structure" class="section level2">
+<h2>Model structure</h2>
+<p>The model counts with the following modules:</p>
+<ul>
+<li><em>SnowGlacier_HBV()</em>: snow and ice-melt models.</li>
+<li><em>Soil_HBV()</em>: empirical formulation that allows to account for actual evapotranspiration, antecedent conditions and effective runoff.</li>
+<li><em>Routing_HBV()</em>: the current package version has five different bucket model formulations to implement and they can be used just by switching the number of the model argument.</li>
+<li><em>Glacier_Disch()</em>: a simple bucket storage and release approach to simulate glacier discharge.</li>
+<li><em>UH()</em>: a transfer function representing the runoff routing in streams.</li>
+</ul>
+<p>The user will also find a precipitation and air temperature functions to extrapolate records to another heights.</p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-de_opt:2016">
+<p>Ardia, David, Katharine Mullen, Brian Peterson, and Joshua Ulrich. 2016. <em>DEoptim: Global Optimization by Differential Evolution</em>. <a href="https://CRAN.R-project.org/package=DEoptim">https://CRAN.R-project.org/package=DEoptim</a>.</p>
+</div>
+<div id="ref-topmodel:2018">
+<p>Buytaert, Wouter. 2018. <em>Topmodel: Implementation of the Hydrological Model Topmodel in R</em>. <a href="https://CRAN.R-project.org/package=topmodel">https://CRAN.R-project.org/package=topmodel</a>.</p>
+</div>
+<div id="ref-evap:2019">
+<p>Guo, Danlu, Seth Westra, and Tim Peterson. 2019. <em>Evapotranspiration: Modelling Actual, Potential and Reference Crop Evapotranspiration</em>. <a href="https://CRAN.R-project.org/package=Evapotranspiration">https://CRAN.R-project.org/package=Evapotranspiration</a>.</p>
+</div>
+<div id="ref-masiokas:2020">
+<p>Masiokas, M. H., A. Rabatel, A. Rivera, L. Ruiz, P. Pitte, J. L. Ceballos, G. Barcaza, et al. 2020. “A Review of the Current State and Recent Changes of the Andean Cryosphere.” <em>Frontiers in Earth Science</em> 8. <a href="https://doi.org/10.3389/feart.2020.00099">https://doi.org/10.3389/feart.2020.00099</a>.</p>
+</div>
+<div id="ref-viviroli:2011">
+<p>Viviroli, D., D. R. Archer, W. Buytaert, H. J. Fowler, G. B. Greenwood, A. F. Hamlet, Y. Huang, et al. 2011. “Climate Change and Mountain Water Resources: Overview and Recommendations for Research, Management and Policy.” <em>Hydrol. Earth Syst. Sci.</em> 15 (2): 471–504. <a href="https://doi.org/10.5194/hess-15-471-2011">https://doi.org/10.5194/hess-15-471-2011</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

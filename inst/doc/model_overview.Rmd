@@ -1,0 +1,72 @@
+---
+title: "Chapter 1: HBV.IANIGLA overview"
+output: rmarkdown::html_vignette
+author: "Ezequiel Toum"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Chapter 1: HBV.IANIGLA overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Motivation
+Hydrological modeling is widely used by engineers, meteorologists, geographers, geologists and
+researchers interested in knowing, for example, the river runoff in the next few days, what will
+happen with the snowpack given certain changes in temperature or precipitation, among many other
+hydrological processes.
+
+
+In the Andes of Argentina, water is an essential resource for crop irrigation, industrial
+and human water supply, hydropower generation and for the environmental balance. The important
+role of mountain watersheds and its relative high sensitivity to climate change (e.g.: in 
+precipitation amounts) highlights the need of shedding light (unless) in some 
+issues [@viviroli:2011]:
+
+* clearly understand the role of glaciers and snow in water supply at catchment scale.
+* make an approach to the surface hydrologic mass balance.
+* be able to make water supply forecasting.
+* make daily streamflow forecasting.
+
+Despite the fact that Argentina has a mountain range of more than 3000 km long and
+large populations depending on the water generated along the Andes, there are just
+a few scientific studies focus on the Andes hydro-climatology. Among these studies, the works
+using hydrological modeling tools are scarce and none of them incorporate glaciers in the 
+hydrological cycle (see @masiokas:2020 for a review). 
+
+
+The **HBV.IANIGLA** was developed to solve hydroclimatic modeling problems in the Andes of
+Argentina, a mountain range with unique characteristics where other open access versions of the
+HBV (e.g.: HBV-Light, TUWmodel) are difficult to apply. As limitations of the previous versions we
+can mention the lack of a glacier module (TUWmodel), the limited number of elevation bands
+(HBV-light) and the impossibility to incorporate new modules, among others.
+The package was design with a modular approach and offers the possibility of applying it using
+diverse spatio-temporal scales with dissimilar objectives in the same environment (e.g.: real
+time streamflow forecasting, teaching hydrological models or simulating the surface mass 
+balance of glaciers). It also offers the chance of combining the modules with other R-related
+hydrological packages (e.g.: Evapotranspiration, DEoptim, topmodel, hydromad) or with functions
+required by the user [@evap:2019; @de_opt:2016; @topmodel:2018].
+
+## Model structure
+
+The model counts with the following modules:
+
+* *SnowGlacier_HBV()*: snow and ice-melt models.
+* *Soil_HBV()*: empirical formulation that allows to account for actual evapotranspiration,
+  antecedent conditions and effective runoff.
+* *Routing_HBV()*: the current package version has five different bucket model formulations 
+  to implement and they can be used just by switching the number of the model argument.
+* *Glacier_Disch()*: a simple bucket storage and release approach to simulate glacier discharge.
+* *UH()*: a transfer function representing the runoff routing in streams.
+
+The user will also find a precipitation and air temperature functions to extrapolate records
+to another heights. 
+
+## References
