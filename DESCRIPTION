@@ -1,7 +1,7 @@
 Package: HBV.IANIGLA
 Type: Package
 Title: Modular Hydrological Model
-Version: 0.2.0
+Version: 0.2.1
 Date: 2021-01-20
 Author: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
 Maintainer: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
@@ -18,6 +18,6 @@ RoxygenNote: 7.1.1
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2021-01-21 15:13:37 UTC; ezequiel
+Packaged: 2021-01-22 21:31:10 UTC; ezequiel
 Repository: CRAN
-Date/Publication: 2021-01-21 15:50:03 UTC
+Date/Publication: 2021-01-22 22:20:12 UTC

@@ -323,43 +323,43 @@ NumericMatrix Routing_HBV(int model,
   // PRIMERO ELIJO EL MODELO A CORRER
 
   if (model == 1) {
-    NumericMatrix out = route_3r_3o(lake = lake,
-                                    inputData = inputData,
-                                    initCond = initCond,
-                                    param = param);
+    NumericMatrix out = route_3r_3o(lake,
+                                    inputData,
+                                    initCond,
+                                    param);
     return(out);
 
   } else if (model == 2) {
 
-    NumericMatrix out = route_2r_2o(lake = lake,
-                                    inputData = inputData,
-                                    initCond = initCond,
-                                    param = param);
+    NumericMatrix out = route_2r_2o(lake,
+                                    inputData,
+                                    initCond,
+                                    param);
 
     return(out);
 
   } else if (model == 3) {
 
-    NumericMatrix out = route_2r_3o(lake = lake,
-                                    inputData = inputData,
-                                    initCond = initCond,
-                                    param = param);
+    NumericMatrix out = route_2r_3o(lake,
+                                    inputData,
+                                    initCond,
+                                    param);
 
     return(out);
 
   } else if (model == 4) {
 
-    NumericMatrix out = route_1r_2o(inputData = inputData,
-                                    initCond = initCond,
-                                    param = param);
+    NumericMatrix out = route_1r_2o(inputData,
+                                    initCond,
+                                    param);
 
     return(out);
 
   } else if (model == 5) {
 
-    NumericMatrix out = route_1r_3o(inputData = inputData,
-                                    initCond = initCond,
-                                    param = param);
+    NumericMatrix out = route_1r_3o(inputData,
+                                    initCond,
+                                    param);
 
     return(out);
 

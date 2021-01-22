@@ -269,9 +269,9 @@ NumericMatrix SnowGlacier_HBV(int model,
         stop("Please verify the parameter vector");
       }
 
-      NumericMatrix out = icemelt_clean(inputData = inputData,
-                                        initCond = initCond,
-                                        param = param);
+      NumericMatrix out = icemelt_clean(inputData,
+                                        initCond,
+                                        param);
 
       return(out);
 
@@ -289,9 +289,9 @@ NumericMatrix SnowGlacier_HBV(int model,
         stop("Please verify the parameter vector");
       }
 
-      NumericMatrix out = snowmelt(inputData = inputData,
-                                   initCond = initCond,
-                                   param = param);
+      NumericMatrix out = snowmelt(inputData,
+                                   initCond,
+                                   param);
 
       return(out);
 
@@ -310,9 +310,9 @@ NumericMatrix SnowGlacier_HBV(int model,
        stop("Please verify the parameter vector");
      }
 
-     NumericMatrix out = icemelt_debris(inputData = inputData,
-                                        initCond = initCond,
-                                        param = param);
+     NumericMatrix out = icemelt_debris(inputData,
+                                        initCond,
+                                        param);
 
      return(out);
 
@@ -339,9 +339,9 @@ NumericMatrix SnowGlacier_HBV(int model,
         stop("Please verify the parameter vector");
       }
 
-      NumericMatrix out = icemelt_clean(inputData = inputData,
-                                        initCond = initCond,
-                                        param = param);
+      NumericMatrix out = icemelt_clean(inputData,
+                                        initCond,
+                                        param);
 
       return(out);
 
@@ -360,9 +360,9 @@ NumericMatrix SnowGlacier_HBV(int model,
         stop("Please verify the parameter vector");
       }
 
-      NumericMatrix out = snowmelt_sca(inputData = inputData,
-                                       initCond = initCond,
-                                       param = param);
+      NumericMatrix out = snowmelt_sca(inputData,
+                                       initCond,
+                                       param);
 
       return(out);
 
@@ -381,9 +381,9 @@ NumericMatrix SnowGlacier_HBV(int model,
         stop("Please verify the parameter vector");
       }
 
-      NumericMatrix out = icemelt_debris(inputData = inputData,
-                                         initCond = initCond,
-                                         param = param);
+      NumericMatrix out = icemelt_debris(inputData,
+                                         initCond,
+                                         param);
 
       return(out);
 
@@ -411,9 +411,9 @@ NumericMatrix SnowGlacier_HBV(int model,
         stop("Please verify the parameter vector");
       }
 
-      NumericMatrix out = icemelt_clean_gca(inputData = inputData,
-                                            initCond = initCond,
-                                            param = param);
+      NumericMatrix out = icemelt_clean_gca(inputData,
+                                            initCond,
+                                            param);
 
       return(out);
 
@@ -431,9 +431,9 @@ NumericMatrix SnowGlacier_HBV(int model,
         stop("Please verify the parameter vector");
       }
 
-      NumericMatrix out = snowmelt(inputData = inputData,
-                                   initCond = initCond,
-                                   param = param);
+      NumericMatrix out = snowmelt(inputData,
+                                   initCond,
+                                   param);
 
       return(out);
 
@@ -452,9 +452,9 @@ NumericMatrix SnowGlacier_HBV(int model,
         stop("Please verify the parameter vector");
       }
 
-      NumericMatrix out = icemelt_debris_gca(inputData = inputData,
-                                             initCond = initCond,
-                                             param = param);
+      NumericMatrix out = icemelt_debris_gca(inputData,
+                                             initCond,
+                                             param);
 
       return(out);
 
