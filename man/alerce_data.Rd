@@ -32,7 +32,6 @@ ranges between 1629 and 2358 \code{masl} and it shows a SE aspect (IANIGLA-ING, 
 \references{
 IANIGLA-ING. IANIGLA-Inventario Nacional de Glaciares. 2018. Informe de las subcuencas de los
 ríos Manso, Villegas y Foyel. Cuenca de los ríos Manso y Puelo. IANIGLA-CONICET, Ministerio
-de Ambiente y Desarrollo Sustentable de la Nación. Technical report, IANIGLA, 2018b.
-URL http://www.glaciaresargentinos.gob.ar . [p8]
+de Ambiente y Desarrollo Sustentable de la Nación. Technical report, IANIGLA, 2018b.[p8]
 }
 \keyword{datasets}

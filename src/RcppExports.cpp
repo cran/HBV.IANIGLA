@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // PET
 NumericVector PET(int model, int hemis, NumericMatrix inputData, NumericVector elev, NumericVector param);
 RcppExport SEXP _HBV_IANIGLA_PET(SEXP modelSEXP, SEXP hemisSEXP, SEXP inputDataSEXP, SEXP elevSEXP, SEXP paramSEXP) {

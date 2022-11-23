@@ -223,7 +223,7 @@ NumericVector Soil_HBV(int model,
     if (param[0] <= 0) {
       stop("Verify: FC > 0");
     }
-    if ( (param[1] > 1) | (param[1] <= 0) ) {
+    if ( (param[1] > 1) || (param[1] <= 0) ) {
       stop("Verify: 0 < LP <= 1");
     }
 
@@ -309,7 +309,7 @@ NumericVector Soil_HBV(int model,
     if (param[0] <= 0) {
       stop("Verify: FC > 0");
     }
-    if ( (param[1] > 1) | (param[1] <= 0) ) {
+    if ( (param[1] > 1) || (param[1] <= 0) ) {
       stop("Verify: 0 < LP <= 1");
     }
 

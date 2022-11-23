@@ -12,40 +12,60 @@
 
 <meta name="author" content="Ezequiel Toum" />
 
-<meta name="date" content="2021-01-22" />
+<meta name="date" content="2022-11-23" />
 
 <title>Chapter 6: Simulating the Tupungato River basin streamflow discharge</title>
 
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
   }
 });
 </script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
 
 
 
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 <style type="text/css">body {
 background-color: #fff;
@@ -239,30 +259,46 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Chapter 6: Simulating the Tupungato River basin streamflow discharge</h1>
+<h1 class="title toc-ignore">Chapter 6: Simulating the Tupungato River
+basin streamflow discharge</h1>
 <h4 class="author">Ezequiel Toum</h4>
-<h4 class="date">2021-01-22</h4>
+<h4 class="date">2022-11-23</h4>
 
 
 
 <div id="is-your-turn" class="section level2">
 <h2>Is your turn!</h2>
-<p>In this chapter you are by your own. In the <code>data(&quot;tupungato_data&quot;)</code> dataset you will find a minimal information content to simulate the streamflow discharge of the Tupungato River basin (<code>?tupungato_data</code>).</p>
+<p>In this chapter you are by your own. In the
+<code>data(&quot;tupungato_data&quot;)</code> dataset you will find a minimal
+information content to simulate the streamflow discharge of the
+Tupungato River basin (<code>?tupungato_data</code>).</p>
 <p><strong>Hint</strong>:</p>
 <ul>
-<li>maybe is time time take a look at the <a href="https://CRAN.R-project.org/package=Evapotranspiration">Evapotranspiration</a> package. Remember that in this case example (Tupungato basin) you only have air temperature series.</li>
-<li>in the dataset you will find series of snow cover area. Are they useful? how? <span class="citation">(see Parajka and Blöschl 2008; Finger et al. 2015)</span>.</li>
-<li>to construct the HBV model it would be wise to revisit vignette’s chapter 3.</li>
+<li>maybe is time time take a look at the <a href="https://CRAN.R-project.org/package=Evapotranspiration">Evapotranspiration</a>
+package. Remember that in this case example (Tupungato basin) you only
+have air temperature series.</li>
+<li>in the dataset you will find series of snow cover area. Are they
+useful? how? <span class="citation">(see Parajka and Blöschl 2008;
+Finger et al. 2015)</span>.</li>
+<li>to construct the HBV model it would be wise to revisit vignette’s
+chapter 3.</li>
 </ul>
 </div>
 <div id="references" class="section level2 unnumbered">
-<h2>References</h2>
-<div id="refs" class="references">
-<div id="ref-finger:2015">
-<p>Finger, David, Marc Vis, Matthias Huss, and Jan Seibert. 2015. “The Value of Multiple Data Set Calibration Versus Model Complexity for Improving the Performance of Hydrological Models in Mountain Catchments.” <em>Water Resour. Res.</em> 51 (4): 1939–58. <a href="https://doi.org/10.1002/2014WR015712">https://doi.org/10.1002/2014WR015712</a>.</p>
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-finger:2015" class="csl-entry">
+Finger, David, Marc Vis, Matthias Huss, and Jan Seibert. 2015.
+<span>“The Value of Multiple Data Set Calibration Versus Model
+Complexity for Improving the Performance of Hydrological Models in
+Mountain Catchments.”</span> <em>Water Resour. Res.</em> 51 (4):
+1939–58. <a href="https://doi.org/10.1002/2014WR015712">https://doi.org/10.1002/2014WR015712</a>.
 </div>
-<div id="ref-parajka_value_2008">
-<p>Parajka, J., and G. Blöschl. 2008. “The Value of MODIS Snow Cover Data in Validating and Calibrating Conceptual Hydrologic Models.” <em>Journal of Hydrology</em> 358 (3): 240–58. <a href="https://doi.org/10.1016/j.jhydrol.2008.06.006">https://doi.org/10.1016/j.jhydrol.2008.06.006</a>.</p>
+<div id="ref-parajka_value_2008" class="csl-entry">
+Parajka, J., and G. Blöschl. 2008. <span>“The Value of
+<span>MODIS</span> Snow Cover Data in Validating and Calibrating
+Conceptual Hydrologic Models.”</span> <em>Journal of Hydrology</em> 358
+(3): 240–58. <a href="https://doi.org/10.1016/j.jhydrol.2008.06.006">https://doi.org/10.1016/j.jhydrol.2008.06.006</a>.
 </div>
 </div>
 </div>

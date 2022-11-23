@@ -12,40 +12,60 @@
 
 <meta name="author" content="Ezequiel Toum" />
 
-<meta name="date" content="2021-01-22" />
+<meta name="date" content="2022-11-23" />
 
 <title>Chapter 1: HBV.IANIGLA overview</title>
 
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
   }
 });
 </script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
 
 
 
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 <style type="text/css">body {
 background-color: #fff;
@@ -241,52 +261,102 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Chapter 1: HBV.IANIGLA overview</h1>
 <h4 class="author">Ezequiel Toum</h4>
-<h4 class="date">2021-01-22</h4>
+<h4 class="date">2022-11-23</h4>
 
 
 
 <div id="motivation" class="section level2">
 <h2>Motivation</h2>
-<p>Hydrological modeling is widely used by engineers, meteorologists, geographers, geologists and researchers interested in knowing, for example, the river runoff in the next few days, what will happen with the snowpack given certain changes in temperature or precipitation, among many other hydrological processes.</p>
-<p>In the Andes of Argentina, water is an essential resource for crop irrigation, industrial and human water supply, hydropower generation and for the environmental balance. The important role of mountain watersheds and its relative high sensitivity to climate change (e.g.: in precipitation amounts) highlights the need of shedding light (unless) in some issues <span class="citation">(Viviroli et al. 2011)</span>:</p>
+<p>Hydrological modeling is widely used by engineers, meteorologists,
+geographers, geologists and researchers interested in knowing, for
+example, the river runoff in the next few days, what will happen with
+the snowpack given certain changes in temperature or precipitation,
+among many other hydrological processes.</p>
+<p>In the Andes of Argentina, water is an essential resource for crop
+irrigation, industrial and human water supply, hydropower generation and
+for the environmental balance. The important role of mountain watersheds
+and its relative high sensitivity to climate change (e.g.: in
+precipitation amounts) highlights the need of shedding light (unless) in
+some issues <span class="citation">(Viviroli et al. 2011)</span>:</p>
 <ul>
-<li>clearly understand the role of glaciers and snow in water supply at catchment scale.</li>
+<li>clearly understand the role of glaciers and snow in water supply at
+catchment scale.</li>
 <li>make an approach to the surface hydrologic mass balance.</li>
 <li>be able to make water supply forecasting.</li>
 <li>make daily streamflow forecasting.</li>
 </ul>
-<p>Despite the fact that Argentina has a mountain range of more than 3000 km long and large populations depending on the water generated along the Andes, there are just a few scientific studies focus on the Andes hydro-climatology. Among these studies, the works using hydrological modeling tools are scarce and none of them incorporate glaciers in the hydrological cycle (see <span class="citation">Masiokas et al. (2020)</span> for a review).</p>
-<p>The <strong>HBV.IANIGLA</strong> was developed to solve hydroclimatic modeling problems in the Andes of Argentina, a mountain range with unique characteristics where other open access versions of the HBV (e.g.: HBV-Light, TUWmodel) are difficult to apply. As limitations of the previous versions we can mention the lack of a glacier module (TUWmodel), the limited number of elevation bands (HBV-light) and the impossibility to incorporate new modules, among others. The package was design with a modular approach and offers the possibility of applying it using diverse spatio-temporal scales with dissimilar objectives in the same environment (e.g.: real time streamflow forecasting, teaching hydrological models or simulating the surface mass balance of glaciers). It also offers the chance of combining the modules with other R-related hydrological packages (e.g.: Evapotranspiration, DEoptim, topmodel, hydromad) or with functions required by the user <span class="citation">(Guo, Westra, and Peterson 2019; Ardia et al. 2016; Buytaert 2018)</span>.</p>
+<p>Despite the fact that Argentina has a mountain range of more than
+3000 km long and large populations depending on the water generated
+along the Andes, there are just a few scientific studies focus on the
+Andes hydro-climatology. Among these studies, the works using
+hydrological modeling tools are scarce and none of them incorporate
+glaciers in the hydrological cycle (see <span class="citation">Masiokas
+et al. (2020)</span> for a review).</p>
+<p>The <strong>HBV.IANIGLA</strong> was developed to solve hydroclimatic
+modeling problems in the Andes of Argentina, a mountain range with
+unique characteristics where other open access versions of the HBV
+(e.g.: HBV-Light, TUWmodel) are difficult to apply. As limitations of
+the previous versions we can mention the lack of a glacier module
+(TUWmodel), the limited number of elevation bands (HBV-light) and the
+impossibility to incorporate new modules, among others. The package was
+design with a modular approach and offers the possibility of applying it
+using diverse spatio-temporal scales with dissimilar objectives in the
+same environment (e.g.: real time streamflow forecasting, teaching
+hydrological models or simulating the surface mass balance of glaciers).
+It also offers the chance of combining the modules with other R-related
+hydrological packages (e.g.: Evapotranspiration, DEoptim, topmodel,
+hydromad) or with functions required by the user <span class="citation">(Guo, Westra, and Peterson 2019; Ardia et al. 2016;
+Buytaert 2018)</span>.</p>
 </div>
 <div id="model-structure" class="section level2">
 <h2>Model structure</h2>
 <p>The model counts with the following modules:</p>
 <ul>
 <li><em>SnowGlacier_HBV()</em>: snow and ice-melt models.</li>
-<li><em>Soil_HBV()</em>: empirical formulation that allows to account for actual evapotranspiration, antecedent conditions and effective runoff.</li>
-<li><em>Routing_HBV()</em>: the current package version has five different bucket model formulations to implement and they can be used just by switching the number of the model argument.</li>
-<li><em>Glacier_Disch()</em>: a simple bucket storage and release approach to simulate glacier discharge.</li>
-<li><em>UH()</em>: a transfer function representing the runoff routing in streams.</li>
+<li><em>Soil_HBV()</em>: empirical formulation that allows to account
+for actual evapotranspiration, antecedent conditions and effective
+runoff.</li>
+<li><em>Routing_HBV()</em>: the current package version has five
+different bucket model formulations to implement and they can be used
+just by switching the number of the model argument.</li>
+<li><em>Glacier_Disch()</em>: a simple bucket storage and release
+approach to simulate glacier discharge.</li>
+<li><em>UH()</em>: a transfer function representing the runoff routing
+in streams.</li>
 </ul>
-<p>The user will also find a precipitation and air temperature functions to extrapolate records to another heights.</p>
+<p>The user will also find a precipitation and air temperature functions
+to extrapolate records to another heights.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
-<h2>References</h2>
-<div id="refs" class="references">
-<div id="ref-de_opt:2016">
-<p>Ardia, David, Katharine Mullen, Brian Peterson, and Joshua Ulrich. 2016. <em>DEoptim: Global Optimization by Differential Evolution</em>. <a href="https://CRAN.R-project.org/package=DEoptim">https://CRAN.R-project.org/package=DEoptim</a>.</p>
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-de_opt:2016" class="csl-entry">
+Ardia, David, Katharine Mullen, Brian Peterson, and Joshua Ulrich. 2016.
+<em>DEoptim: Global Optimization by Differential Evolution</em>. <a href="https://CRAN.R-project.org/package=DEoptim">https://CRAN.R-project.org/package=DEoptim</a>.
 </div>
-<div id="ref-topmodel:2018">
-<p>Buytaert, Wouter. 2018. <em>Topmodel: Implementation of the Hydrological Model Topmodel in R</em>. <a href="https://CRAN.R-project.org/package=topmodel">https://CRAN.R-project.org/package=topmodel</a>.</p>
+<div id="ref-topmodel:2018" class="csl-entry">
+Buytaert, Wouter. 2018. <em>Topmodel: Implementation of the Hydrological
+Model TOPMODEL in r</em>. <a href="https://CRAN.R-project.org/package=topmodel">https://CRAN.R-project.org/package=topmodel</a>.
 </div>
-<div id="ref-evap:2019">
-<p>Guo, Danlu, Seth Westra, and Tim Peterson. 2019. <em>Evapotranspiration: Modelling Actual, Potential and Reference Crop Evapotranspiration</em>. <a href="https://CRAN.R-project.org/package=Evapotranspiration">https://CRAN.R-project.org/package=Evapotranspiration</a>.</p>
+<div id="ref-evap:2019" class="csl-entry">
+Guo, Danlu, Seth Westra, and Tim Peterson. 2019. <em>Evapotranspiration:
+Modelling Actual, Potential and Reference Crop Evapotranspiration</em>.
+<a href="https://CRAN.R-project.org/package=Evapotranspiration">https://CRAN.R-project.org/package=Evapotranspiration</a>.
 </div>
-<div id="ref-masiokas:2020">
-<p>Masiokas, M. H., A. Rabatel, A. Rivera, L. Ruiz, P. Pitte, J. L. Ceballos, G. Barcaza, et al. 2020. “A Review of the Current State and Recent Changes of the Andean Cryosphere.” <em>Frontiers in Earth Science</em> 8. <a href="https://doi.org/10.3389/feart.2020.00099">https://doi.org/10.3389/feart.2020.00099</a>.</p>
+<div id="ref-masiokas:2020" class="csl-entry">
+Masiokas, M. H., A. Rabatel, A. Rivera, L. Ruiz, P. Pitte, J. L.
+Ceballos, G. Barcaza, et al. 2020. <span>“A <span>Review</span> of the
+<span>Current</span> <span>State</span> and <span>Recent</span>
+<span>Changes</span> of the <span>Andean</span>
+<span>Cryosphere</span>.”</span> <em>Frontiers in Earth Science</em> 8.
+<a href="https://doi.org/10.3389/feart.2020.00099">https://doi.org/10.3389/feart.2020.00099</a>.
 </div>
-<div id="ref-viviroli:2011">
-<p>Viviroli, D., D. R. Archer, W. Buytaert, H. J. Fowler, G. B. Greenwood, A. F. Hamlet, Y. Huang, et al. 2011. “Climate Change and Mountain Water Resources: Overview and Recommendations for Research, Management and Policy.” <em>Hydrol. Earth Syst. Sci.</em> 15 (2): 471–504. <a href="https://doi.org/10.5194/hess-15-471-2011">https://doi.org/10.5194/hess-15-471-2011</a>.</p>
+<div id="ref-viviroli:2011" class="csl-entry">
+Viviroli, D., D. R. Archer, W. Buytaert, H. J. Fowler, G. B. Greenwood,
+A. F. Hamlet, Y. Huang, et al. 2011. <span>“Climate Change and Mountain
+Water Resources: Overview and Recommendations for Research, Management
+and Policy.”</span> <em>Hydrol. Earth Syst. Sci.</em> 15 (2): 471–504.
+<a href="https://doi.org/10.5194/hess-15-471-2011">https://doi.org/10.5194/hess-15-471-2011</a>.
 </div>
 </div>
 </div>

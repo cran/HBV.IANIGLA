@@ -1,8 +1,8 @@
 Package: HBV.IANIGLA
 Type: Package
 Title: Modular Hydrological Model
-Version: 0.2.1
-Date: 2021-01-20
+Version: 0.2.6
+Date: 2022-11-23
 Author: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
 Maintainer: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
 Description: The HBV hydrological model (Bergström, S. and Lindström, G., (2015) <doi:10.1002/hyp.10510>) has been split in modules to allow the user to build his/her own model. This version was developed by the author in IANIGLA-CONICET (Instituto Argentino de Nivologia, Glaciologia y Ciencias Ambientales - Consejo Nacional de Investigaciones Cientificas y Tecnicas) for hydroclimatic studies in the Andes. HBV.IANIGLA incorporates routines for clean and debris covered glacier melt simulations. 
@@ -14,10 +14,10 @@ URL: https://gitlab.com/ezetoum27/hbv.ianigla
 BugReports: https://gitlab.com/ezetoum27/hbv.ianigla/-/issues
 Depends: R (>= 3.5.0)
 LinkingTo: Rcpp
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2021-01-22 21:31:10 UTC; ezequiel
+Packaged: 2022-11-23 13:08:41 UTC; eze
 Repository: CRAN
-Date/Publication: 2021-01-22 22:20:12 UTC
+Date/Publication: 2022-11-23 23:50:02 UTC

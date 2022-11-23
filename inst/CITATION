@@ -3,10 +3,31 @@ citHeader("To cite 'HBV.IANIGLA' in publications use:")
 citEntry(entry = "manual",
 	 title = "{HBV.IANIGLA}: Modular Hydrological Model",
 	 author = as.person("Ezequiel Toum"),
-   year = "2021",
-	 note = "0.2.0",
+   year = "2022",
+	 note = "0.2.6",
 	 url = "https://CRAN.R-project.org/package=HBV.IANIGLA",
 	 textVersion =
-         paste("Ezequiel Toum (", "2021","). ",
-               "'HBV.IANIGLA': Modular Hydrological Model. ", "version 0.2.0", ".", sep = "")
+         paste("Ezequiel Toum (", "2022","). ",
+               "'HBV.IANIGLA': Modular Hydrological Model. ", "version 0.2.6", ".", sep = "")
 )
+
+citEntry(entry = "article",
+  author = personList(as.person("Ezequiel Toum"),
+                         as.person("Mariano H. Masiokas"),
+                         as.person("Ricardo Villalba"),
+                         as.person("Pierre Pitte"),
+                         as.person("Lucas Ruiz")),
+  title = "The {HBV.IANIGLA} Hydrological Model",
+  year = "2021",
+  journal = "The R Journal",
+  doi = "10.32614/RJ-2021-059",
+  url = "https://doi.org/10.32614/RJ-2021-059",
+  pages = "378--395",
+  volume = "13",
+  number = "1",
+  textVersion = "Toum et al. The HBV.IANIGLA Hydrological Model.The R Journal. doi: 10.32614/RJ-2021-059. url: https://doi.org/10.32614/RJ-2021-059."
+)
+
+
+citFooter("BibTeX entries for LaTeX users: use\n",
+sQuote('toBibtex(citation("HBV.IANIGLA"))'))
